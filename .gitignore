@@ -141,3 +141,12 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Local operating-system and editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Local Prisma development databases
+server/prisma/*.db
+server/prisma/*.db-journal
