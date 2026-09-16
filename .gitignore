@@ -147,6 +147,6 @@ vite.config.ts.timestamp-*
 .idea/
 .vscode/
 
-# Local Prisma development databases
-server/prisma/*.db
-server/prisma/*.db-journal
+# Local Supabase CLI state
+supabase/.temp/
+supabase/.branches/
