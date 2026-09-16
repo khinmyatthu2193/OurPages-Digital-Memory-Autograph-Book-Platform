@@ -1,61 +1,49 @@
 # Database Design
 
-PostgreSQL is accessed only through Prisma. The schema is in `server/prisma/schema.prisma`.
+The source of truth is `supabase/migrations/202609150001_phase_2_foundation.sql`. Supabase PostgreSQL is accessed through `@supabase/supabase-js`; the earlier standalone Prisma user/password model has been removed.
 
 ## Relationships
 
 ```text
-User 1 -------- * Memory * -------- 0..1 Prompt
- owner                 optional selected prompt
+auth.users 1 ── 1 profiles 1 ── * memories * ── 0..1 prompts
 ```
 
-## User
+Deleting an Auth user cascades to the profile and owned memories. Deleting a prompt sets `memories.prompt_id` to null.
 
-| Field        | Type/constraint                                 |
-| ------------ | ----------------------------------------------- |
-| id           | UUID primary key                                |
-| name         | required text                                   |
-| username     | required, unique text                           |
-| email        | required, unique text                           |
-| passwordHash | required text; never selected for public output |
-| bio          | nullable text                                   |
-| avatarUrl    | nullable text                                   |
-| createdAt    | creation timestamp                              |
-| updatedAt    | automatically updated timestamp                 |
+## Tables
 
-Usernames and emails must be normalized to lowercase in the application before persistence. Username format/length and all text limits are enforced at the API boundary; unique database constraints remain the final concurrency-safe check.
+`profiles` contains the Auth UUID primary/foreign key, display name, unique normalized username, optional bio/avatar URL, `open | closed | private` book status, and timestamps. It contains no email, password, or credential fields. Usernames are 3–30 lowercase URL-safe characters, must begin with a letter/number, and cannot use the maintained reserved list in the migration and validators.
 
-## Memory
+`memories` contains a UUID, required owner, optional author name for anonymous submissions, message, anonymity flag, optional prompt/photo URL, owner moderation flags, and timestamps. Checks require a nonblank 1–5000-character message and an author name for non-anonymous messages.
 
-| Field       | Type/constraint                                               |
-| ----------- | ------------------------------------------------------------- |
-| id          | UUID primary key                                              |
-| ownerId     | required foreign key to User; cascades on owner deletion      |
-| authorName  | nullable for anonymous submissions                            |
-| message     | required text                                                 |
-| isAnonymous | boolean, default false                                        |
-| promptId    | nullable foreign key to Prompt; set null if prompt is deleted |
-| photoUrl    | nullable text                                                 |
-| isFavorite  | boolean, default false                                        |
-| isPinned    | boolean, default false                                        |
-| isHidden    | boolean, default false                                        |
-| createdAt   | creation timestamp                                            |
-| updatedAt   | automatically updated timestamp                               |
+`prompts` contains a UUID, unique prompt text, category, active flag, and timestamps. Allowed initial categories are `memory`, `friendship`, `graduation`, `future`, and `fun`.
 
-Indexes support owner dashboard ordering, owner visibility queries, and prompt lookup. The API must ensure `authorName` is present when `isAnonymous` is false and never disclose it for anonymous public output.
+All three tables use triggers to maintain `updated_at`. Registration uses a security-definer trigger with an empty search path to create exactly one profile for each new Auth user.
 
-## Prompt
+## Indexes
 
-| Field     | Type/constraint       |
-| --------- | --------------------- |
-| id        | UUID primary key      |
-| text      | required text         |
-| category  | required text         |
-| isActive  | boolean, default true |
-| createdAt | creation timestamp    |
+- Unique profile username index/constraint
+- Unique prompt text constraint (also makes seeding repeatable)
+- `(owner_id, created_at desc)` for owner inbox ordering
+- `(owner_id, is_hidden, created_at desc)` for visibility filtering
+- `prompt_id` for memory/prompt joins
+- `(is_active, category)` for prompt selection
 
-An index supports active prompts by category. Prompts are shared curated content, not owner-created in the MVP.
+## RLS policies
 
-## Migration policy
+RLS is enabled on every application table.
 
-No migration is generated during initialization because no database connection is assumed. After local PostgreSQL is configured, review the schema and run `npm run prisma:migrate -w server -- --name init`. Commit the generated migration. Never edit an applied migration or run destructive reset commands against shared data.
+| Table    | Operation | Rule                                                              |
+| -------- | --------- | ----------------------------------------------------------------- |
+| profiles | SELECT    | Public for open/closed books; owner can also read private profile |
+| profiles | UPDATE    | `auth.uid() = id` in both `USING` and `WITH CHECK`                |
+| prompts  | SELECT    | Active prompts only                                               |
+| memories | SELECT    | `auth.uid() = owner_id`                                           |
+| memories | UPDATE    | Owner match in `USING` and `WITH CHECK`                           |
+| memories | DELETE    | Owner match                                                       |
+
+There is no public memory SELECT or INSERT policy. Inserts are revoked from `anon` and `authenticated`; validated guest writes are performed only by Express. Profile insert/delete and prompt mutation privileges are also revoked from browser roles.
+
+## Seed data
+
+`supabase/seed.sql` inserts five clearly non-personal development prompts. The unique prompt text constraint plus `ON CONFLICT DO NOTHING` makes repeated local resets safe. No fake users or memories are seeded.

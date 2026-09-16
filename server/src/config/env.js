@@ -15,4 +15,7 @@ export const env = Object.freeze({
   port: readPort(process.env.PORT),
   clientOrigin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
   isProduction: nodeEnv === 'production',
+  supabaseUrl: process.env.SUPABASE_URL,
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
 });

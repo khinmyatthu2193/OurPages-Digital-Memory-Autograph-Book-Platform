@@ -1,10 +1,14 @@
 import PagePlaceholder from '../components/PagePlaceholder.jsx';
+import { useAuth } from '../auth/auth-context.js';
 
 export default function DashboardPage() {
+  const { user, logout } = useAuth();
   return (
     <PagePlaceholder eyebrow="Private owner area" title="Dashboard">
-      This route will list and manage received memories after authentication and
-      ownership rules are implemented.
+      Signed in as {user.email}.{' '}
+      <button className="underline" type="button" onClick={() => logout()}>
+        Log out
+      </button>
     </PagePlaceholder>
   );
 }

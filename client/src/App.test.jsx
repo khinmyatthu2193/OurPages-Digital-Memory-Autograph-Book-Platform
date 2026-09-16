@@ -8,7 +8,6 @@ describe('application routes', () => {
     ['/', 'Memories worth keeping'],
     ['/login', 'Log in'],
     ['/register', 'Register'],
-    ['/dashboard', 'Dashboard'],
     ['/u/khin', '@khin'],
   ])('renders %s', (path, heading) => {
     render(
@@ -19,6 +18,18 @@ describe('application routes', () => {
 
     expect(
       screen.getByRole('heading', { level: 1, name: heading }),
+    ).toBeInTheDocument();
+  });
+
+  it('redirects unauthenticated dashboard visitors to login', async () => {
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: 'Log in' }),
     ).toBeInTheDocument();
   });
 });
