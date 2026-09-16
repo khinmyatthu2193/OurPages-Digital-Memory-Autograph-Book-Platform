@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+import AuthProvider from './auth/AuthProvider.jsx';
+import ProtectedRoute from './auth/ProtectedRoute.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import HomePage from './pages/HomePage.jsx';
@@ -9,15 +11,24 @@ import RegisterPage from './pages/RegisterPage.jsx';
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<AppLayout />}>
-        <Route index element={<HomePage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="u/:username" element={<PublicBookPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="u/:username" element={<PublicBookPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
