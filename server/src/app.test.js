@@ -21,4 +21,10 @@ describe('API foundation', () => {
     expect(response.status).toBe(404);
     expect(response.body.error.code).toBe('NOT_FOUND');
   });
+
+  it('rejects unauthenticated access to the current-user endpoint', async () => {
+    const response = await request(app).get('/api/auth/me');
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('UNAUTHENTICATED');
+  });
 });
