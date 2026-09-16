@@ -1,18 +1,21 @@
 # Security Strategy
 
-This is the required baseline for feature implementation; initialization does not yet implement authentication or uploads.
+## Authentication and secrets
 
-- **Passwords:** hash with Argon2id using reviewed parameters and a maintained library. Enforce length, permit password managers, never log or return credentials, and use generic authentication failures.
-- **Authentication:** use high-entropy, expiring, revocable sessions where practical. Rotate identifiers after authentication and sensitive changes. Do not store bearer tokens in local/session storage.
-- **Cookies:** authentication cookies are `HttpOnly`, `Secure` in production, `SameSite=Lax`, narrowly scoped, and explicitly expired on logout. Cookie-authenticated mutations use CSRF tokens or a comparably robust origin-based defense.
-- **Authorization:** middleware establishes identity; every protected service scopes database operations to that user. Resource IDs alone never grant access.
-- **CORS:** allow only the configured client origin, required methods/headers, and credentials. CORS is not authorization.
-- **Validation:** validate and normalize params, queries, and bodies with allow-listed schemas. Bound string lengths and reject unexpected types/fields. Escape output by context.
-- **Abuse prevention:** apply stricter IP/account rate limits to login and public submissions. Add progressive friction such as a honeypot or challenge based on observed abuse; avoid exposing whether accounts/emails exist.
-- **Uploads:** permit a short image MIME/extension list, verify file signatures, cap dimensions and bytes, rename objects, store outside the app filesystem, strip metadata, and serve from a separate non-executable origin. Consider malware scanning before launch.
-- **HTTP/application:** use TLS, Helmet security headers, limited JSON body sizes, parameterized Prisma queries, and dependency/security scanning. Define a restrictive Content Security Policy for deployment.
-- **Errors/logging:** centralized handlers return stable public messages and correlation IDs while logs retain actionable context. Never expose stacks, SQL, secrets, cookies, or sensitive request bodies in production.
-- **Secrets:** environment variables or a deployment secret manager hold database/auth credentials. Validate required configuration at startup, rotate compromised secrets, and commit only `.env.example`.
-- **Common threats:** React's escaping plus contextual sanitization mitigates XSS; CSRF defenses cover cookie mutations; Prisma and validation reduce injection; rate limits address brute force; authorization tests cover IDOR; redirects and outbound URLs require allow lists.
+Supabase Auth exclusively handles registration, password verification, login, logout, session persistence, refresh, and user identity. OurPages never stores passwords. The browser receives only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`; the anon key is not a secret and relies on RLS.
 
-Before production, complete threat modeling, privacy/retention rules, dependency review, backup/restore testing, secure proxy configuration, and incident-response ownership.
+`SUPABASE_SERVICE_ROLE_KEY` is server-only, bypasses RLS, and must never use a `VITE_` prefix, enter client code, logs, bundles, or source control. Rotate it immediately if exposed. Express verifies Bearer tokens with Supabase before trusting an identity. Production secrets belong in the deployment platform's secret manager.
+
+## Data authorization
+
+RLS is enabled for profiles, memories, and prompts. Owners can update only their profile and read/update/delete only memories whose `owner_id` equals `auth.uid()`. No policy makes memories publicly readable. Browser roles cannot insert memories. Even when the server uses its privileged client for a guest submission, it explicitly resolves the owner by normalized username and requires an `open` status.
+
+## Public submissions
+
+The implemented boundary includes strict field allow-listing, type/length checks, trimming, UUID validation, active-prompt verification, open-book verification, a honeypot, a 100 KB JSON limit, and per-IP rate limiting. React escapes memory content when it is eventually rendered. Do not render visitor HTML or add photo writes without a separate storage validation/policy design.
+
+Rate limiting is process-local in Phase 2. Before horizontally scaled production, use a shared rate-limit store and configure Express `trust proxy` only for the known proxy topology. Add telemetry, progressive bot friction, privacy/retention rules, and incident-response ownership before launch.
+
+## HTTP and errors
+
+Helmet security headers and an allow-listed `CLIENT_ORIGIN` CORS configuration remain enabled. Public errors do not expose database details, secrets, or stack traces. Private profile lookups intentionally resemble missing books. Logs must exclude access/refresh tokens and submitted personal content.

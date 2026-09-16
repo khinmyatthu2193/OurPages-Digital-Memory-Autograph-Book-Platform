@@ -2,54 +2,51 @@
 
 ## Prerequisites
 
-- Node.js 20.19 or later and npm 10 or later
-- PostgreSQL 15 or later
-- Git
+- Node.js 20.19+ and npm 10+
+- A Supabase project, or Supabase CLI plus Docker for the local stack
 
-## Install and configure
+## Configure
+
+Install dependencies with `npm install`. Copy the client-safe values from `.env.example` into `client/.env.local`, and the server values into `server/.env`.
+
+Use the project URL and anon/publishable key for `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY`. Put the service-role/secret key only in `server/.env` as `SUPABASE_SERVICE_ROLE_KEY`. Never commit either local environment file. Configure the Supabase Auth site URL as `http://localhost:5173` for local development and add deployed redirect URLs before release.
+
+## Database setup
+
+For a linked hosted project, review the SQL then run:
 
 ```bash
-git clone <repository-url>
-cd OurPages
-npm install
-cp .env.example server/.env
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push
 ```
 
-PowerShell users can run `Copy-Item .env.example server/.env`. Create an empty `ourpages` PostgreSQL database or change `DATABASE_URL`. Replace `AUTH_SECRET` before authentication work; it is currently reserved.
-
-## Prisma/database
+For the local Supabase stack:
 
 ```bash
-npm run prisma:format -w server
-npm run prisma:validate -w server
-npm run prisma:generate -w server
-npm run prisma:migrate -w server -- --name init
-npm run prisma:studio -w server
+npx supabase start
+npx supabase db reset
+npx supabase test db
 ```
 
-The first three commands do not modify database data. `prisma:migrate` creates/applies a development migration and requires a disposable local database. Review generated SQL before committing it. Production uses `npx prisma migrate deploy` in a controlled deployment step.
+`db reset` is destructive and is only for the disposable local database. It applies `supabase/migrations` and then `supabase/seed.sql`. `test db` runs the pgTAP ownership/RLS integration checks under authenticated and anonymous roles. Do not run reset against shared or production data. Review migrations before pushing. Email confirmation behavior is controlled in Supabase Auth settings; when enabled, registration asks the user to confirm before a session exists.
 
-## Run
-
-```bash
-npm run dev             # both workspaces
-npm run dev -w client   # http://localhost:5173
-npm run dev -w server   # http://localhost:3000
-```
-
-Vite proxies `/api` to port 3000 during development. Override the API port and matching proxy target together if needed.
-
-## Quality and builds
+## Run and verify
 
 ```bash
+npm run dev
 npm test
 npm run lint
 npm run format:check
 npm run build
 ```
 
-Tests run once in CI. Workspace-specific variants use `-w client` or `-w server`. Client production output is `client/dist`; the server build validates syntax because the JavaScript API runs directly in Node.
+The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, and Vite proxies `/api`. A live Supabase project is required for manual end-to-end registration and login. Unit tests mock external Auth calls and inspect the migration boundary, so they do not require real credentials. Full RLS integration can be exercised against local Supabase after `npx supabase db reset`.
 
-## Working agreements
+## Phase 2 manual smoke test
 
-Create feature branches, keep changes scoped, include tests for behavior, and update documentation when contracts change. Never commit local `.env`, credentials, uploads, generated output, or production data. Database access belongs in services and external input must be validated at the boundary.
+1. Register a valid non-reserved username and confirm email if required.
+2. Log in and confirm `/dashboard` displays the Auth email.
+3. Log out and confirm `/dashboard` redirects to `/login`.
+4. Request `/api/public/<username>` and verify no email or memory content is returned.
+5. POST a guest message to an open book; close/private the book and verify submission is rejected.

@@ -2,64 +2,39 @@
 
 ## System overview
 
-OurPages is a two-workspace monorepo with a browser client, a stateless REST API, and PostgreSQL persistence.
+OurPages is an npm-workspaces application backed by Supabase.
 
 ```text
-Browser (React/Vite)
-        |
-        | HTTPS + JSON; secure cookie for authenticated calls
-        v
-Express REST API
-        |
-        | Prisma Client
-        v
-PostgreSQL
+React/Vite ── anon key + Supabase Auth ──> Supabase Auth
+     │                                      │ creates
+     │ Bearer access token                  v
+     └──────────────> Express API ──────> profiles / memories / prompts
+                         │                  PostgreSQL + RLS
+                         └─ server-only service role (guest inserts only)
 ```
 
-## Frontend
-
-`client/src` is organized by pages, shared components, layouts, context, hooks, services, and utilities. React Router owns client-side navigation. API calls belong in `services`, session state in an authentication context when implemented, and presentation remains in components. Tailwind CSS v4 supplies styling through its Vite plugin.
-
-Initial routes are `/`, `/login`, `/register`, `/dashboard`, and `/u/:username`. They are architectural placeholders only. The dashboard route will receive an authentication guard with the authentication slice.
-
-## Backend
-
-`server/src/app.js` composes Express and is importable without opening a socket, which makes it testable. `server/src/server.js` loads configuration and starts the process. Routes delegate to controllers; controllers handle HTTP concerns; services contain business and database operations; validators define boundary validation. Central not-found and error middleware produce a consistent JSON envelope.
-
-## API communication
-
-The client calls versionless `/api` routes over HTTPS. In development, Vite proxies `/api` to Express. JSON is the default payload. Cookie-bearing cross-origin requests use `credentials: 'include'`; CORS is restricted to `CLIENT_ORIGIN`.
+Supabase provides PostgreSQL, authentication, session refresh/persistence, and the future storage foundation. React uses one configured client in `client/src/lib/supabase.js`. Express owns application-level validation and privileged guest writes; it does not store passwords or create a second session system.
 
 ## Authentication flow
 
-The planned implementation hashes passwords with Argon2id and establishes a server-verifiable session or short-lived signed token in a `Secure`, `HttpOnly`, `SameSite=Lax` cookie. Registration/login rotates the session identifier. `/api/auth/me` resolves the owner, and logout invalidates the server-side session where sessions are used before clearing the cookie. State-changing cookie-authenticated requests require CSRF protection. Exact session persistence will be selected during the authentication milestone; secrets never enter browser storage.
+Registration calls Supabase Auth with `display_name` and normalized `username` metadata. The `on_auth_user_created` database trigger inserts the matching profile using the Auth user UUID. Database constraints are the final authority for username format, reserved names, and uniqueness. Depending on the Supabase project's email-confirmation setting, registration either creates a session immediately or asks the owner to confirm email.
+
+`AuthProvider` restores `getSession()`, subscribes to `onAuthStateChange`, and exposes register/login/logout/current-user state. Supabase persists and refreshes the browser session. `/dashboard` is guarded client-side. Protected Express calls send the Supabase access token as a Bearer token; middleware verifies it with Supabase Auth before using the user identity.
 
 ## Request flows
 
-```text
-Public visitor: /u/:username -> GET public profile -> fill form
-                -> POST memory -> validate/rate-limit -> Prisma -> PostgreSQL
+Public reads use `GET /api/public/:username`, which returns only allow-listed profile fields and active prompts. Private profiles return the same not-found response as absent profiles.
 
-Owner: login -> secure cookie -> protected dashboard request
-       -> authenticate -> authorize ownership -> service -> Prisma -> PostgreSQL
-```
+Guest submissions use `POST /api/public/:username/memories`. Express applies a per-IP limit, rejects a honeypot field, validates/normalizes all input, verifies the target is open and the optional prompt is active, then inserts with the server-only service role. There is deliberately no anon or authenticated INSERT policy on `memories`.
 
-Public responses use allow-listed fields. Owner routes derive owner identity from authentication, never request parameters. Hidden content and internal account fields are excluded from public queries.
+Owner profile changes use an authenticated Supabase client carrying the user's token, so RLS remains active. The service role is isolated to backend services that require it and never appears in Vite code.
 
-## Database interaction
+## Boundaries
 
-Only backend services use Prisma Client. Controllers do not issue queries directly. The initial relational schema is described in [DATABASE.md](DATABASE.md). Migrations are reviewed and applied through Prisma commands; production deployment uses `prisma migrate deploy`, never development migration commands.
+- `controllers`: HTTP status/envelope handling
+- `middleware`: authentication, rate limiting, and centralized errors
+- `services`: database queries and business rules
+- `validators`: boundary normalization and allow lists
+- `supabase/migrations`: schema, triggers, constraints, indexes, and RLS
 
-## Deployment
-
-The client builds to static assets for a CDN/static host. The Express service runs behind TLS termination and a trusted reverse proxy. It connects to managed PostgreSQL using an encrypted connection and least-privileged credentials. Client and API should share a site where practical to simplify secure cookies. CI installs from the lockfile, lints, tests, builds, and validates the Prisma schema before deployment.
-
-## Decisions
-
-- **Monorepo/npm workspaces:** simple coordinated development without extra orchestration.
-- **JavaScript/ES modules:** matches the requested default; JSDoc and tests can provide lightweight contracts.
-- **REST/Express:** direct fit for the bounded resource model.
-- **PostgreSQL/Prisma:** relational constraints suit ownership and moderation state.
-- **Cookie authentication:** reduces exposure to token theft through browser JavaScript.
-- **Single API service:** sufficient for MVP; no microservices or queues.
-- **Service boundary:** adds a clear home for ownership checks and database work without premature abstraction.
+Storage buckets and upload policy are deferred until the photo-upload phase. The Phase 2 public page remains a placeholder; only its API foundation exists.
