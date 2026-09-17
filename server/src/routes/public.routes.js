@@ -1,6 +1,6 @@
 import { rateLimit } from 'express-rate-limit';
 import { Router } from 'express';
-import { getBook, submitMemory } from '../controllers/public.controller.js';
+import { getBook, getPrompts, submitMemory } from '../controllers/public.controller.js';
 
 const publicRouter = Router();
 const submissionLimiter = rateLimit({
@@ -16,6 +16,7 @@ const submissionLimiter = rateLimit({
   },
 });
 
+publicRouter.get('/prompts', getPrompts);
 publicRouter.get('/:username', getBook);
 publicRouter.post('/:username/memories', submissionLimiter, submitMemory);
 

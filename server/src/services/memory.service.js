@@ -8,7 +8,7 @@ import { validateUsername } from '../validators/username.js';
 
 export async function getPublicBook(
   rawUsername,
-  database = getSupabasePublicClient(),
+  database = getSupabaseAdmin(),
 ) {
   const result = validateUsername(rawUsername);
   if (!result.valid)
@@ -32,7 +32,21 @@ export async function getPublicBook(
     .order('category');
   if (promptError)
     throw new AppError(500, 'DATABASE_ERROR', 'Could not load prompts');
-  return { profile, prompts };
+  const { data: memories, error: memoryError } = await database
+    .from('memories')
+    .select('id, author_name, message, is_anonymous, prompt_id, created_at')
+    .eq('owner_id', profile.id)
+    .eq('is_hidden', false)
+    .order('created_at', { ascending: false });
+  if (memoryError)
+    throw new AppError(500, 'DATABASE_ERROR', 'Could not load memories');
+  return { profile, prompts, memories };
+}
+
+export async function getActivePrompts(database = getSupabasePublicClient()) {
+  const { data, error } = await database.from('prompts').select('id, text, category').eq('is_active', true).order('category');
+  if (error) throw new AppError(500, 'DATABASE_ERROR', 'Could not load prompts');
+  return data;
 }
 
 export async function createPublicMemory(

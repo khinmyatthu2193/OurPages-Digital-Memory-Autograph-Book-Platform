@@ -34,11 +34,11 @@ export function validateMemorySubmission(body) {
   const authorName =
     typeof body.authorName === 'string' ? body.authorName.trim() : '';
 
-  if (!message || message.length > 5000) {
+  if (!message || message.length > 2000) {
     throw new AppError(
       400,
       'VALIDATION_ERROR',
-      'Message must be between 1 and 5000 characters',
+      'Message must be between 1 and 2000 characters',
     );
   }
   if (!isAnonymous && (!authorName || authorName.length > 100)) {
