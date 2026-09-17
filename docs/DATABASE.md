@@ -1,6 +1,6 @@
 # Database Design
 
-The source of truth is `supabase/migrations/202609150001_phase_2_foundation.sql`. Supabase PostgreSQL is accessed through `@supabase/supabase-js`; the earlier standalone Prisma user/password model has been removed.
+The source of truth is the ordered `supabase/migrations/` set, including the Phase 3 public-memory limit migration. Supabase PostgreSQL is accessed through `@supabase/supabase-js`; the earlier standalone Prisma user/password model has been removed.
 
 ## Relationships
 
@@ -14,7 +14,7 @@ Deleting an Auth user cascades to the profile and owned memories. Deleting a pro
 
 `profiles` contains the Auth UUID primary/foreign key, display name, unique normalized username, optional bio/avatar URL, `open | closed | private` book status, and timestamps. It contains no email, password, or credential fields. Usernames are 3–30 lowercase URL-safe characters, must begin with a letter/number, and cannot use the maintained reserved list in the migration and validators.
 
-`memories` contains a UUID, required owner, optional author name for anonymous submissions, message, anonymity flag, optional prompt/photo URL, owner moderation flags, and timestamps. Checks require a nonblank 1–5000-character message and an author name for non-anonymous messages.
+`memories` contains a UUID, required owner, optional author name for anonymous submissions, message, anonymity flag, optional prompt/photo URL, owner moderation flags, and timestamps. Phase 3 constrains messages to 1–2,000 nonblank characters and requires an author name for non-anonymous messages.
 
 `prompts` contains a UUID, unique prompt text, category, active flag, and timestamps. Allowed initial categories are `memory`, `friendship`, `graduation`, `future`, and `fun`.
 

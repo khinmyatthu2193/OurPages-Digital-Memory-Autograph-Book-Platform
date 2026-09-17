@@ -6,6 +6,9 @@ All notable project changes will be recorded here, following Keep a Changelog co
 
 ### Added
 
+- Phase 3 public `/u/:username` book with responsive profile, visible-memory cards, closed-book handling, and accessible no-login memory form.
+- Safe public visible-memory and prompt retrieval endpoints, with hidden memories excluded from public responses.
+- Guest message validation capped at 2,000 characters while owner-controlled fields remain server-derived.
 - Supabase Auth client, registration/login/logout flows, session restoration, and protected dashboard routing.
 - Supabase migration for profiles, memories, prompts, constraints, indexes, triggers, and RLS policies.
 - Validated and rate-limited Express public memory-submission foundation.
