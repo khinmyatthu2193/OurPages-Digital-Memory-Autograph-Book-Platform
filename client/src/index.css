@@ -16,3 +16,17 @@
     @apply underline-offset-4;
   }
 }
+
+@layer components {
+  .book-page, .empty-book, .success-book { @apply mx-auto min-h-screen max-w-2xl px-5 py-10 sm:px-8 sm:py-16; }
+  .book-hero { @apply rounded-[2rem] bg-[#f4e4cf] px-6 py-10 text-center shadow-[0_18px_50px_rgba(90,53,37,.12)] sm:px-12; }
+  .avatar { @apply mx-auto mb-5 h-24 w-24 rounded-full object-cover ring-4 ring-white; }
+  .fallback { @apply grid place-items-center bg-rosewood text-4xl font-semibold text-white; }
+  .eyebrow { @apply mb-2 text-xs font-bold uppercase tracking-[.18em] text-rosewood; }
+  .book-hero h1, .empty-book h1, .success-book h1 { @apply m-0 font-serif text-4xl leading-tight text-ink sm:text-5xl; }
+  .username { @apply mt-2 text-sm font-medium text-[#765b50]; }.bio { @apply mx-auto mt-6 max-w-md leading-7 text-[#5c4740]; }.introduction { @apply mt-7 font-serif text-xl italic text-[#68463b]; }
+  .primary-button { @apply mt-6 rounded-full bg-rosewood px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-[#723d42] focus:outline-2 focus:outline-offset-2 focus:outline-rosewood disabled:cursor-not-allowed disabled:opacity-60; }
+  .status-note { @apply mx-auto mt-6 max-w-sm rounded-xl bg-white/70 px-4 py-3 text-sm text-[#68463b]; }
+  .memory-list { @apply py-12; }.section-heading h2 { @apply m-0 font-serif text-3xl; }.memory-card { @apply mt-5 rounded-2xl border border-[#ead8c4] bg-white p-6 shadow-sm; }.memory-from { @apply m-0 font-semibold text-rosewood; }.memory-message { @apply mb-5 mt-3 whitespace-pre-wrap font-serif text-xl leading-8; }.memory-card time, .character-count { @apply text-sm text-[#806b61]; }.no-memories { @apply mt-5 rounded-2xl border border-dashed border-[#d9bea4] p-6 text-[#806b61]; }
+  .modal-backdrop { @apply fixed inset-0 z-50 overflow-y-auto bg-[#34231e]/55 p-3 sm:p-8; }.memory-modal { @apply relative mx-auto my-4 max-w-xl rounded-3xl bg-paper p-6 shadow-2xl sm:p-9; }.memory-modal h2 { @apply mt-0 font-serif text-3xl; }.close-button { @apply absolute right-5 top-4 rounded-full px-2 text-3xl text-[#765b50] focus:outline-2 focus:outline-rosewood; }.memory-modal label, .memory-modal legend { @apply mb-2 block text-sm font-semibold text-ink; }.memory-modal input:not([type='radio']):not([type='checkbox']), .memory-modal textarea { @apply mb-4 w-full rounded-xl border border-[#d9bea4] bg-white px-3 py-2.5 focus:outline-2 focus:outline-rosewood; }.memory-modal textarea { @apply min-h-32 resize-y; }.check-row, .prompt-option { @apply flex! items-center gap-2 font-normal!; }.memory-modal fieldset { @apply mb-5 rounded-xl border border-[#ead8c4] p-3; }.memory-modal legend span { @apply font-normal text-[#806b61]; }.form-error { @apply rounded-lg bg-red-50 p-3 text-sm text-red-800; }.book-skeleton { @apply space-y-5 py-24; }.book-skeleton span { @apply block h-16 animate-pulse rounded-2xl bg-[#ead8c4]; }.empty-book, .success-book { @apply pt-32 text-center; }.success-book > span { @apply text-5xl text-rosewood; }
+}
