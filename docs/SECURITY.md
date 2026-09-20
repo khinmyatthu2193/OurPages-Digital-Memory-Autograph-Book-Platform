@@ -12,7 +12,7 @@ RLS is enabled for profiles, memories, and prompts. Owners can update only their
 
 ## Public submissions
 
-The implemented boundary includes strict field allow-listing, type/length checks, trimming, UUID validation, active-prompt verification, open-book verification, a honeypot, a 100 KB JSON limit, and per-IP rate limiting. React escapes memory content when it is eventually rendered. Do not render visitor HTML or add photo writes without a separate storage validation/policy design.
+The implemented boundary includes strict field allow-listing, type/length checks, trimming, UUID validation, active-prompt verification, open-book verification, a honeypot, a 100 KB JSON limit, and per-IP rate limiting. Messages are capped at 2,000 characters and names at 100. Public reads have a separate allow-list and explicitly filter `is_hidden = false`; they never return owner IDs or moderation flags. React renders content as text, never visitor HTML. Do not add photo writes without a separate storage validation/policy design.
 
 Rate limiting is process-local in Phase 2. Before horizontally scaled production, use a shared rate-limit store and configure Express `trust proxy` only for the known proxy topology. Add telemetry, progressive bot friction, privacy/retention rules, and incident-response ownership before launch.
 
