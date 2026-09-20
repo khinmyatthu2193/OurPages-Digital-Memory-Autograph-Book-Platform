@@ -23,7 +23,7 @@ Registration calls Supabase Auth with `display_name` and normalized `username` m
 
 ## Request flows
 
-Public reads use `GET /api/public/:username`, which returns only allow-listed profile fields and active prompts. Private profiles return the same not-found response as absent profiles.
+Public reads use `GET /api/public/:username`, which returns only allow-listed profile fields, active prompts, and memories where `is_hidden = false`. The endpoint uses the server-only client because browser roles deliberately have no memory-read policy; its select lists and visibility filter are the application boundary. The browser renders the mobile-first book at `/u/:username`; open books offer the no-login form, while closed books remain readable but omit it. Private profiles return the same not-found response as absent profiles. `GET /api/public/prompts` returns active prompt choices only.
 
 Guest submissions use `POST /api/public/:username/memories`. Express applies a per-IP limit, rejects a honeypot field, validates/normalizes all input, verifies the target is open and the optional prompt is active, then inserts with the server-only service role. There is deliberately no anon or authenticated INSERT policy on `memories`.
 
@@ -37,4 +37,4 @@ Owner profile changes use an authenticated Supabase client carrying the user's t
 - `validators`: boundary normalization and allow lists
 - `supabase/migrations`: schema, triggers, constraints, indexes, and RLS
 
-Storage buckets and upload policy are deferred until the photo-upload phase. The Phase 2 public page remains a placeholder; only its API foundation exists.
+Storage buckets and upload policy are deferred until the photo-upload phase. Owner memory-management UI remains deferred; Phase 3 ships the public book and guest-submission experience only.

@@ -33,4 +33,10 @@ describe('public memory validation', () => {
       }),
     ).toThrow('unsupported fields');
   });
+
+  it('rejects messages longer than the public 2,000 character limit', () => {
+    expect(() =>
+      validateMemorySubmission({ authorName: 'May', message: 'a'.repeat(2001) }),
+    ).toThrow('between 1 and 2000');
+  });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createPublicMemory } from './memory.service.js';
+import { createPublicMemory, getPublicBook } from './memory.service.js';
 
 function query(result) {
   const chain = {};
@@ -7,6 +7,7 @@ function query(result) {
     chain[method] = vi.fn(() => chain);
   chain.maybeSingle = vi.fn(async () => result);
   chain.single = vi.fn(async () => result);
+  chain.then = (resolve, reject) => Promise.resolve(result).then(resolve, reject);
   return chain;
 }
 
@@ -45,5 +46,21 @@ describe('public memory service', () => {
       status: 404,
       code: 'BOOK_NOT_OPEN',
     });
+  });
+
+  it('queries memories with an explicit hidden-memory exclusion', async () => {
+    const profileQuery = query({ data: { id: 'owner-1', username: 'khin' }, error: null });
+    const promptQuery = query({ data: [], error: null });
+    const memoryQuery = query({ data: [], error: null });
+    const queries = [profileQuery, promptQuery, memoryQuery];
+    const database = { from: vi.fn(() => queries.shift()) };
+
+    const book = await getPublicBook('khin', database);
+
+    expect(book.memories).toEqual([]);
+    expect(memoryQuery.eq).toHaveBeenCalledWith('is_hidden', false);
+    expect(memoryQuery.select).toHaveBeenCalledWith(
+      'id, author_name, message, is_anonymous, prompt_id, created_at',
+    );
   });
 });
