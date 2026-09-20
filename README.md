@@ -1,6 +1,6 @@
 # OurPages
 
-### A digital memory & autograph book for the moments worth keeping.
+### A digital memory & autograph book for the moments worth keeping
 
 **OurPages** is a digital version of the traditional autograph book — designed for friends, classmates, and communities to collect personal messages and memories in one meaningful place.
 
@@ -10,7 +10,7 @@ Create your personal page, share your unique link, and let your friends leave me
 
 ---
 
-## ✨ How It Works
+## ✨ How It Works ?
 
 The idea is simple:
 
