@@ -30,6 +30,16 @@ export function validateMemorySubmission(body) {
   }
 
   const message = typeof body.message === 'string' ? body.message.trim() : '';
+  if (body.isAnonymous != null && typeof body.isAnonymous !== 'boolean') {
+    throw new AppError(
+      400,
+      'VALIDATION_ERROR',
+      'Anonymous mode must be a boolean',
+    );
+  }
+  if (body.authorName != null && typeof body.authorName !== 'string') {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Author name must be text');
+  }
   const isAnonymous = body.isAnonymous === true;
   const authorName =
     typeof body.authorName === 'string' ? body.authorName.trim() : '';

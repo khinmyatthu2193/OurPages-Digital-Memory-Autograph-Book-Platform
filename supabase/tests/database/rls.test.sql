@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(7);
 
 insert into auth.users (id, email, raw_user_meta_data)
 values
@@ -43,6 +43,11 @@ update public.profiles set memory_book_status = 'private' where id = '22222222-2
 set local role anon;
 set local request.jwt.claims = '{"role":"anon"}';
 select is((select count(*)::integer from public.memories), 0, 'anonymous visitors cannot read memories');
+select is(
+  has_column_privilege('anon', 'public.profiles', 'id', 'SELECT'),
+  false,
+  'anonymous visitors cannot select the profile Auth user ID'
+);
 
 select * from finish();
 rollback;
