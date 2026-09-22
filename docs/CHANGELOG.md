@@ -22,4 +22,5 @@ All notable project changes will be recorded here, following Keep a Changelog co
 
 ### Changed
 
+- Completed the Phase 3 public response boundary, guest-form error and keyboard handling, and route/error states.
 - Replaced the initialization-era Prisma/custom-password direction with Supabase PostgreSQL and Supabase Auth.

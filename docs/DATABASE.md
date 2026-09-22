@@ -44,6 +44,8 @@ RLS is enabled on every application table.
 
 There is no public memory SELECT or INSERT policy. Inserts are revoked from `anon` and `authenticated`; validated guest writes are performed only by Express. Profile insert/delete and prompt mutation privileges are also revoked from browser roles.
 
+Anonymous profile reads have column-level grants for public display fields only. The Auth user UUID remains available to the owner/server workflow but is not readable through the anonymous table role or public-book API.
+
 ## Seed data
 
 `supabase/seed.sql` inserts five clearly non-personal development prompts. The unique prompt text constraint plus `ON CONFLICT DO NOTHING` makes repeated local resets safe. No fake users or memories are seeded.

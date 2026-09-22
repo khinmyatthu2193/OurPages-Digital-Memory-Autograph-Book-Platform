@@ -5,12 +5,12 @@
 OurPages is an npm-workspaces application backed by Supabase.
 
 ```text
-React/Vite ── anon key + Supabase Auth ──> Supabase Auth
-     │                                      │ creates
-     │ Bearer access token                  v
-     └──────────────> Express API ──────> profiles / memories / prompts
-                         │                  PostgreSQL + RLS
-                         └─ server-only service role (guest inserts only)
+React/Vite â”€â”€ anon key + Supabase Auth â”€â”€> Supabase Auth
+     â”‚                                      â”‚ creates
+     â”‚ Bearer access token                  v
+     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€> Express API â”€â”€â”€â”€â”€â”€> profiles / memories / prompts
+                         â”‚                  PostgreSQL + RLS
+                         â””â”€ server-only service role (guest inserts only)
 ```
 
 Supabase provides PostgreSQL, authentication, session refresh/persistence, and the future storage foundation. React uses one configured client in `client/src/lib/supabase.js`. Express owns application-level validation and privileged guest writes; it does not store passwords or create a second session system.
@@ -23,7 +23,7 @@ Registration calls Supabase Auth with `display_name` and normalized `username` m
 
 ## Request flows
 
-Public reads use `GET /api/public/:username`, which returns only allow-listed profile fields, active prompts, and memories where `is_hidden = false`. The endpoint uses the server-only client because browser roles deliberately have no memory-read policy; its select lists and visibility filter are the application boundary. The browser renders the mobile-first book at `/u/:username`; open books offer the no-login form, while closed books remain readable but omit it. Private profiles return the same not-found response as absent profiles. `GET /api/public/prompts` returns active prompt choices only.
+Public reads use `GET /api/public/:username`, which returns only allow-listed profile fields, active prompts, and memories where `is_hidden = false`. The owner ID is used to query memories and removed before responding. The endpoint uses the server-only client because browser roles deliberately have no memory-read policy; its select lists and visibility filter are the application boundary. The browser renders the mobile-first book at `/u/:username`; open books offer the no-login form, while closed books remain readable but omit it. Private profiles return the same not-found response as absent profiles. `GET /api/prompts` returns active prompt choices only, with `/api/public/prompts` retained as an alias.
 
 Guest submissions use `POST /api/public/:username/memories`. Express applies a per-IP limit, rejects a honeypot field, validates/normalizes all input, verifies the target is open and the optional prompt is active, then inserts with the server-only service role. There is deliberately no anon or authenticated INSERT policy on `memories`.
 

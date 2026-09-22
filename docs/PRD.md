@@ -66,7 +66,7 @@ Administrators are outside the MVP.
 
 ## MVP scope
 
-The MVP includes the two roles and journeys above, text memories, optional prompt/photo fields, owner moderation controls, basic profile editing, and a small curated prompt set. Phase 3 delivers the public book, visible-memory feed, active prompts, and secure no-login submissions; owner memory management remains a later phase.
+The MVP includes the two roles and journeys above, text memories, optional prompt/photo fields, owner moderation controls, basic profile editing, and a small curated prompt set. Phase 3 is implemented in code: the public book, visible-memory feed, active prompts, and secure no-login submissions. Photo upload and owner memory management remain later phases. Live verification requires a migrated Supabase project and server-only service key.
 
 ## Future scope
 

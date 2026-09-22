@@ -2,7 +2,7 @@
 
 OurPages is a digital memory and autograph book. A registered owner shares a personal link such as `/u/khin`; friends can leave a memory without creating an account, and the owner can privately organize what they receive.
 
-The repository currently contains the Supabase database and authentication foundation. The final memory-book experience is intentionally deferred.
+The repository contains the Supabase foundation, owner authentication, and the Phase 3 public memory-book experience. Owner memory management is planned for a later phase.
 
 ## Planned core features
 
@@ -61,4 +61,4 @@ Copy the Vite values from `.env.example` to `client/.env.local` and server value
 
 ## Status and roadmap
 
-Phase 2 is implemented: Supabase schema/RLS, Auth forms/session state, a protected dashboard placeholder, and the secured guest-submission API foundation. The final dashboard and memory-book UI remain future work. See [docs/PRD.md](docs/PRD.md) for the bounded MVP.
+Phase 3 is implemented in code: public books, visible memories, active prompts, and no-login submissions. The owner dashboard remains a placeholder. A hosted project still needs the migrations and server-only service key before real submissions can be verified; see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). See [docs/PRD.md](docs/PRD.md) for the bounded MVP.
