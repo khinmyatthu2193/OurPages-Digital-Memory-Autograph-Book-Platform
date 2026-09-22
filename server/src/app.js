@@ -6,6 +6,7 @@ import { env } from './config/env.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import authRouter from './routes/auth.routes.js';
 import healthRouter from './routes/health.routes.js';
+import memoryRouter from './routes/memory.routes.js';
 import promptRouter from './routes/prompt.routes.js';
 import profileRouter from './routes/profile.routes.js';
 import publicRouter from './routes/public.routes.js';
@@ -25,6 +26,7 @@ export function createApp() {
   app.use(cookieParser());
 
   app.use('/api/health', healthRouter);
+  app.use('/api/memories', memoryRouter);
   app.use('/api/prompts', promptRouter);
   app.use('/api/auth', authRouter);
   app.use('/api/profile', profileRouter);
