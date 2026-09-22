@@ -9,7 +9,7 @@
 
 @layer base {
   body {
-    @apply m-0 min-w-80 bg-paper text-ink antialiased;
+    @apply m-0 min-w-0 bg-paper text-ink antialiased;
   }
 
   a {
@@ -112,6 +112,9 @@
   }
   .form-error {
     @apply rounded-lg bg-red-50 p-3 text-sm text-red-800;
+  }
+  .honeypot-field {
+    @apply pointer-events-none absolute -left-[10000px] h-px w-px overflow-hidden;
   }
   .book-skeleton {
     @apply space-y-5 py-24;
@@ -346,5 +349,11 @@
   .site-register,
   .site-login {
     transition: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .site-register {
+    display: none;
   }
 }
