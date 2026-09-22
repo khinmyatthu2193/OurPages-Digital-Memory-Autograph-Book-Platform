@@ -10,6 +10,8 @@ Supabase Auth exclusively handles registration, password verification, login, lo
 
 RLS is enabled for profiles, memories, and prompts. Anonymous profile reads also have column-level grants that exclude the Auth user ID. Owners can update only their profile and read/update/delete only memories whose `owner_id` equals `auth.uid()`. No policy makes memories publicly readable. Browser roles cannot insert memories. Even when the server uses its privileged client for a guest submission, it explicitly resolves the owner by normalized username and requires an `open` status.
 
+Every dashboard API requires a verified Supabase Bearer token. Express derives the owner ID from that token, ignores client ownership claims, applies the owner ID to every memory query or mutation, and then executes through the authenticated Supabase client so RLS remains active. Missing and other-owner memory IDs share the same `404 MEMORY_NOT_FOUND` response. Profile changes are similarly scoped to the authenticated user ID.
+
 ## Public submissions
 
 The implemented boundary includes strict field allow-listing, type/length checks (including the anonymous boolean), trimming, UUID validation, active-prompt verification, open-book verification, a honeypot included in the browser form, a 100 KB JSON limit, and per-IP rate limiting. Messages are capped at 2,000 characters and names at 100. Public reads have a separate allow-list and explicitly filter `is_hidden = false`; they never return owner IDs or moderation flags. React renders content as text, never visitor HTML. Do not add photo writes without a separate storage validation/policy design.

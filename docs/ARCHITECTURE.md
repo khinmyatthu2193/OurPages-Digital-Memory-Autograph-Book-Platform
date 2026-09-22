@@ -29,6 +29,8 @@ Guest submissions use `POST /api/public/:username/memories`. Express applies a p
 
 Owner profile changes use an authenticated Supabase client carrying the user's token, so RLS remains active. The service role is isolated to backend services that require it and never appears in Vite code.
 
+The protected dashboard has overview, memories, My Page, and settings routes. It sends the current Supabase access token to Express, which verifies the user before listing or changing memories. Memory services add an explicit `owner_id = authenticated user ID` condition while RLS independently enforces the same boundary. The browser calculates overview statistics from the securely returned owner collection, performs client-side search and filters, and rolls back optimistic memory changes when the API fails.
+
 ## Boundaries
 
 - `controllers`: HTTP status/envelope handling
@@ -37,4 +39,4 @@ Owner profile changes use an authenticated Supabase client carrying the user's t
 - `validators`: boundary normalization and allow lists
 - `supabase/migrations`: schema, triggers, constraints, indexes, and RLS
 
-Storage buckets and upload policy are deferred until the photo-upload phase. Owner memory-management UI remains deferred; Phase 3 ships the public book and guest-submission experience only.
+Storage buckets and upload policy are deferred until the photo-upload phase. Phase 4 adds the private owner dashboard without adding photo upload, notifications, exports, or other future experience features.

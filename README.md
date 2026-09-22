@@ -61,4 +61,4 @@ Copy the Vite values from `.env.example` to `client/.env.local` and server value
 
 ## Status and roadmap
 
-Phase 3 is implemented in code: public books, visible memories, active prompts, and no-login submissions. The owner dashboard remains a placeholder. A hosted project still needs the migrations and server-only service key before real submissions can be verified; see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). See [docs/PRD.md](docs/PRD.md) for the bounded MVP.
+Phase 4 is implemented in code: authenticated owners can view real statistics, search and filter memories, favorite, pin, hide, or delete them, manage their public page status, copy their link, and edit basic profile details. A hosted project still needs the migrations and server-only service key before live end-to-end verification; see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). See [docs/PRD.md](docs/PRD.md) for the bounded MVP.

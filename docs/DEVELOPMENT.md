@@ -43,10 +43,14 @@ npm run build
 
 The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, and Vite proxies `/api`. A live Supabase project is required for manual end-to-end registration and login. Unit tests mock external Auth calls and inspect the migration boundary, so they do not require real credentials. Full RLS integration can be exercised against local Supabase after `npx supabase db reset`.
 
-## Phase 2 manual smoke test
+## Phase 4 manual smoke test
 
 1. Register a valid non-reserved username and confirm email if required.
-2. Log in and confirm `/dashboard` displays the Auth email.
-3. Log out and confirm `/dashboard` redirects to `/login`.
-4. Request `/api/public/<username>` and verify no email or memory content is returned.
-5. POST a guest message to an open book; close/private the book and verify submission is rejected.
+2. Submit at least two guest memories, then log in and confirm `/dashboard` shows their real statistics.
+3. Search and filter `/dashboard/memories`; favorite, pin, hide, and unhide an owned memory.
+4. Confirm a hidden memory is absent from `/u/<username>` but remains visible to its owner.
+5. Delete an owned memory through the confirmation UI and verify it no longer appears.
+6. Close the memory book from the dashboard and verify public submission is rejected; reopen it and verify submission succeeds.
+7. Edit the display name and bio, copy the public link, and open the public page.
+8. Log out and confirm all `/dashboard` routes redirect to `/login`.
+9. With a second account, verify another owner's memory IDs return `404` for update and delete operations.
