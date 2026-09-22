@@ -1,64 +1,351 @@
 # OurPages
 
-OurPages is a digital memory and autograph book. A registered owner shares a personal link such as `/u/khin`; friends can leave a memory without creating an account, and the owner can privately organize what they receive.
+### A digital memory & autograph book for the moments worth keeping
 
-The repository contains the Supabase foundation, owner authentication, and the Phase 3 public memory-book experience. Owner memory management is planned for a later phase.
+**OurPages** is a digital version of the traditional autograph book — designed for friends, classmates, and communities to collect personal messages and memories in one meaningful place.
 
-## Planned core features
+Create your personal page, share your unique link, and let your friends leave memories **without creating an account**. Your memories stay private to you, while you decide how to organize and manage them.
 
-- Account registration and secure sign-in
-- A shareable public memory-book page
-- Guest memory submission without an account
-- Owner controls to favorite, pin, hide, or delete memories
-- Optional prompts and photo attachments
+> **Create a page. Share a memory. Keep it forever.**
 
-## Stack
+---
 
-- React, Vite, React Router, Tailwind CSS
-- Node.js, Express, REST
-- Supabase PostgreSQL, Auth, and `supabase-js`
-- npm workspaces, ESLint, Prettier, Vitest
+## ✨ How It Works ?
 
-## Repository
+The idea is simple:
 
 ```text
-client/          React application
-server/          Express validation and application API
-supabase/        Database migrations and development seed
-docs/            Product and engineering documentation
-tests/           Reserved for cross-workspace/integration tests
+Create an account
+       ↓
+Get your personal page
+       ↓
+Share your link
+       ↓
+Friends leave memories
+       ↓
+You collect & organize them
 ```
 
-Unit tests live beside each workspace's source code. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system shape.
+For example:
 
-## Local setup
+```text
+ourpages.app/u/khin
+```
 
-Prerequisites: Node.js 20.19+, npm 10+, and a Supabase project (or Supabase CLI with Docker).
+Anyone with the link can leave a memory without signing up.
+
+The page owner can then privately manage the memories they receive.
+
+---
+
+## 🎯 Why OurPages?
+
+Traditional autograph books are often filled with handwritten messages at the end of school, university, or an important chapter of life.
+
+OurPages brings that experience to the web while keeping the personal feeling of an autograph book.
+
+It is designed for moments such as:
+
+- 🎓 Graduation & farewell
+- 🏫 School or university memories
+- 👯 Classmate messages
+- 🎂 Birthday memories
+- 💐 Special occasions
+- ❤️ Personal milestones
+
+The goal is not to become another social network.
+
+**It is a small, personal space for memories between people who matter to each other.**
+
+---
+
+## 🌱 Planned Core Features
+
+### 👤 Personal Memory Book
+
+Every registered user gets a unique personal page such as:
+
+```text
+/u/khin
+```
+
+The owner can customize their profile and control whether their memory book is open or closed.
+
+### 💌 Guest Memory Submission
+
+Friends can leave a message without creating an account.
+
+They can provide:
+
+- Name or nickname
+- Personal message
+- Anonymous option
+- Optional memory prompt
+
+### 🔐 Private Owner Management
+
+Only the owner can manage the memories they receive.
+
+Owners can:
+
+- ⭐ Favorite memories
+- 📌 Pin important memories
+- 🙈 Hide memories
+- 🗑️ Delete memories
+- 🔒 Control whether new memories can be submitted
+
+### 💭 Memory Prompts
+
+Optional prompts can help visitors write more meaningful messages.
+
+For example:
+
+> "What's one memory of us that you'll never forget?"
+
+### 📷 Photo Attachments
+
+Photo attachments are planned as part of the extended memory-book experience.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React
+- Vite
+- React Router
+- Tailwind CSS
+
+### Backend
+
+- Node.js
+- Express
+- REST API
+
+### Backend Infrastructure
+
+- Supabase PostgreSQL
+- Supabase Auth
+- Supabase Storage
+- `supabase-js`
+
+### Development
+
+- npm Workspaces
+- ESLint
+- Prettier
+- Vitest
+- Supabase CLI
+
+---
+
+## 🏗️ Project Structure
+
+```text
+OurPages/
+├── client/          # React + Vite frontend
+├── server/          # Express API and application logic
+├── supabase/        # Database migrations and development seed
+├── docs/            # Product and engineering documentation
+└── tests/           # Cross-workspace / integration tests
+```
+
+Unit tests are maintained alongside each workspace's source code.
+
+For the overall system architecture, see:
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- [`docs/PRD.md`](docs/PRD.md)
+- [`docs/DATABASE.md`](docs/DATABASE.md)
+- [`docs/API.md`](docs/API.md)
+- [`docs/SECURITY.md`](docs/SECURITY.md)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have:
+
+- Node.js `20.19+`
+- npm `10+`
+- A Supabase project
+
+For local Supabase development, you will also need the Supabase CLI and Docker.
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repository-url>
+cd OurPages
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
-npx supabase db reset # local Supabase only; destroys the local database
+```
+
+### 3. Configure environment variables
+
+Copy the example environment files and add your local configuration.
+
+Client:
+
+```text
+client/.env.local
+```
+
+Server:
+
+```text
+server/.env
+```
+
+See [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for the complete setup process.
+
+> **Important:** Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser or commit credentials to Git.
+
+### 4. Start Supabase locally
+
+If you are using local Supabase:
+
+```bash
+npx supabase db reset
+```
+
+> ⚠️ This resets the local Supabase database.
+
+### 5. Start the application
+
+```bash
 npm run dev
 ```
 
-Copy the client-safe values from `.env.example` to `client/.env.local` and the server values to `server/.env`. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for hosted-project and local Supabase setup.
+The development servers will be available at:
 
-## Commands
-
-```bash
-npm run dev           # client and API together
-npm run build         # production builds
-npm run lint          # all workspace linters
-npm test              # all workspace tests
-npm run format:check  # verify formatting
+```text
+Client → http://localhost:5173
+API    → http://localhost:3000
+Health → http://localhost:3000/api/health
 ```
 
-Client: `http://localhost:5173`. API health: `http://localhost:3000/api/health`.
+---
 
-## Environment
+## 📋 Available Commands
 
-Copy the Vite values from `.env.example` to `client/.env.local` and server values to `server/.env`. Never commit credentials, and never expose `SUPABASE_SERVICE_ROLE_KEY` to Vite/browser code.
+| Command                | Description                   |
+| ---------------------- | ----------------------------- |
+| `npm run dev`          | Start the client and API      |
+| `npm run build`        | Build production applications |
+| `npm run lint`         | Run workspace linters         |
+| `npm test`             | Run all tests                 |
+| `npm run format:check` | Check code formatting         |
 
-## Status and roadmap
+---
 
-Phase 4 is implemented in code: authenticated owners can view real statistics, search and filter memories, favorite, pin, hide, or delete them, manage their public page status, copy their link, and edit basic profile details. A hosted project still needs the migrations and server-only service key before live end-to-end verification; see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). See [docs/PRD.md](docs/PRD.md) for the bounded MVP.
+## 🔐 Security
+
+Security is an important part of the project because guest users can submit memories without authentication.
+
+OurPages is designed around the following principles:
+
+- Supabase Auth handles account authentication.
+- Row Level Security (RLS) protects user-owned data.
+- Guest submissions are validated on the server.
+- Owner-controlled fields cannot be modified by guests.
+- Rate limiting and basic anti-spam protection are applied to public submission endpoints.
+- Sensitive Supabase credentials remain server-side.
+- `SUPABASE_SERVICE_ROLE_KEY` is never exposed to client-side code.
+
+---
+
+## 🗺️ Roadmap
+
+OurPages is being developed incrementally rather than building the entire product at once.
+
+### Phase 1 — Project Foundation
+
+- Repository structure
+- React + Vite setup
+- Express API
+- Development tooling
+- Initial documentation
+
+### Phase 2 — Backend & Authentication
+
+- Supabase PostgreSQL
+- Database schema
+- Row Level Security
+- User registration & sign-in
+- Session management
+- Guest-submission API foundation
+
+### Phase 3 — Public Memory Book
+
+- Personal `/u/:username` pages
+- Public profile
+- Guest memory submission
+- Memory prompts
+- Open / closed / private book states
+- Public-page responsive UI
+
+### Phase 4 — Owner Dashboard
+
+- Received memory list
+- Favorite / pin / hide / delete
+- Search and filtering
+- Profile management
+- Memory-book settings
+- Shareable personal link
+
+### Future
+
+- 📷 Photo memories
+- 🎓 Graduation / farewell mode
+- 🔗 QR codes
+- 📄 PDF memory-book export
+- 🎙️ Voice memories
+- 💌 More personalization options
+
+---
+
+## 🧭 Current Status
+
+**Development Status: Phase 4 complete**
+
+Implemented:
+
+- ✅ Supabase database schema and Row Level Security
+- ✅ Registration, sign-in, and protected sessions
+- ✅ Public memory-book pages and guest submissions
+- ✅ Memory prompts and open, closed, or private book states
+- ✅ Owner dashboard with statistics and recent memories
+- ✅ Search, filtering, favorite, pin, hide, and delete controls
+- ✅ Profile settings and shareable personal links
+
+Personalization and extended memory features remain on the future roadmap.
+
+---
+
+## 💡 Project Vision
+
+OurPages is built around a simple idea:
+
+> **Some messages are too meaningful to disappear in a chat.**
+
+Whether it is a graduation farewell, a final university semester, or simply a special moment shared with friends, OurPages aims to turn those messages into something people can return to years later.
+
+**Create your page.
+Share your memories.
+Keep your pages.**
+
+---
+
+## 📄 License
+
+This project is currently under development.
+
+See [`LICENSE`](LICENSE) for licensing information.
