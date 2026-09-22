@@ -27,4 +27,14 @@ describe('API foundation', () => {
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe('UNAUTHENTICATED');
   });
+
+  it.each([
+    ['get', '/api/memories'],
+    ['patch', '/api/memories/11111111-1111-4111-8111-111111111111'],
+    ['delete', '/api/memories/11111111-1111-4111-8111-111111111111'],
+  ])('rejects unauthenticated %s access to %s', async (method, path) => {
+    const response = await request(app)[method](path);
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe('UNAUTHENTICATED');
+  });
 });

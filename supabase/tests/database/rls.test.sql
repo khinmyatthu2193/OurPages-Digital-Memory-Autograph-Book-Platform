@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(12);
 
 insert into auth.users (id, email, raw_user_meta_data)
 values
@@ -37,12 +37,39 @@ select is(
   0,
   'owner cannot update another owner memory'
 );
+select lives_ok(
+  $$update public.profiles set display_name = 'Updated Owner' where id = '11111111-1111-4111-8111-111111111111'$$,
+  'owner can update their own profile'
+);
+select lives_ok(
+  $$update public.profiles set display_name = 'Hacked Owner' where id = '22222222-2222-4222-8222-222222222222'$$,
+  'cross-owner profile update is safely ignored'
+);
+select lives_ok(
+  $$delete from public.memories where owner_id = '22222222-2222-4222-8222-222222222222'$$,
+  'cross-owner memory delete is safely ignored'
+);
 
 reset role;
+select is(
+  (select count(*)::integer from public.profiles where id = '22222222-2222-4222-8222-222222222222' and display_name = 'Hacked Owner'),
+  0,
+  'another owner profile was not changed'
+);
+select is(
+  (select count(*)::integer from public.memories where owner_id = '22222222-2222-4222-8222-222222222222'),
+  1,
+  'another owner memory was not deleted'
+);
 update public.profiles set memory_book_status = 'private' where id = '22222222-2222-4222-8222-222222222222';
 set local role anon;
 set local request.jwt.claims = '{"role":"anon"}';
 select is((select count(*)::integer from public.memories), 0, 'anonymous visitors cannot read memories');
+select is(
+  has_column_privilege('anon', 'public.profiles', 'id', 'SELECT'),
+  false,
+  'anonymous visitors cannot select the profile Auth user ID'
+);
 
 select * from finish();
 rollback;

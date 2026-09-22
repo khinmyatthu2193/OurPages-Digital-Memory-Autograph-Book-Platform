@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import WebSocket from 'ws';
 import { env } from './env.js';
 
 function requireValue(value, name) {
@@ -13,6 +14,7 @@ function requireValue(value, name) {
 
 const options = {
   auth: { autoRefreshToken: false, persistSession: false },
+  realtime: { transport: WebSocket },
 };
 
 export function getSupabaseAdmin() {

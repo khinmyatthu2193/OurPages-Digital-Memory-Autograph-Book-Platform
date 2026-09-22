@@ -46,12 +46,12 @@ OurPages brings that experience to the web while keeping the personal feeling of
 
 It is designed for moments such as:
 
-* 🎓 Graduation & farewell
-* 🏫 School or university memories
-* 👯 Classmate messages
-* 🎂 Birthday memories
-* 💐 Special occasions
-* ❤️ Personal milestones
+- 🎓 Graduation & farewell
+- 🏫 School or university memories
+- 👯 Classmate messages
+- 🎂 Birthday memories
+- 💐 Special occasions
+- ❤️ Personal milestones
 
 The goal is not to become another social network.
 
@@ -77,10 +77,10 @@ Friends can leave a message without creating an account.
 
 They can provide:
 
-* Name or nickname
-* Personal message
-* Anonymous option
-* Optional memory prompt
+- Name or nickname
+- Personal message
+- Anonymous option
+- Optional memory prompt
 
 ### 🔐 Private Owner Management
 
@@ -88,11 +88,11 @@ Only the owner can manage the memories they receive.
 
 Owners can:
 
-* ⭐ Favorite memories
-* 📌 Pin important memories
-* 🙈 Hide memories
-* 🗑️ Delete memories
-* 🔒 Control whether new memories can be submitted
+- ⭐ Favorite memories
+- 📌 Pin important memories
+- 🙈 Hide memories
+- 🗑️ Delete memories
+- 🔒 Control whether new memories can be submitted
 
 ### 💭 Memory Prompts
 
@@ -112,31 +112,31 @@ Photo attachments are planned as part of the extended memory-book experience.
 
 ### Frontend
 
-* React
-* Vite
-* React Router
-* Tailwind CSS
+- React
+- Vite
+- React Router
+- Tailwind CSS
 
 ### Backend
 
-* Node.js
-* Express
-* REST API
+- Node.js
+- Express
+- REST API
 
 ### Backend Infrastructure
 
-* Supabase PostgreSQL
-* Supabase Auth
-* Supabase Storage
-* `supabase-js`
+- Supabase PostgreSQL
+- Supabase Auth
+- Supabase Storage
+- `supabase-js`
 
 ### Development
 
-* npm Workspaces
-* ESLint
-* Prettier
-* Vitest
-* Supabase CLI
+- npm Workspaces
+- ESLint
+- Prettier
+- Vitest
+- Supabase CLI
 
 ---
 
@@ -155,11 +155,11 @@ Unit tests are maintained alongside each workspace's source code.
 
 For the overall system architecture, see:
 
-* [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-* [`docs/PRD.md`](docs/PRD.md)
-* [`docs/DATABASE.md`](docs/DATABASE.md)
-* [`docs/API.md`](docs/API.md)
-* [`docs/SECURITY.md`](docs/SECURITY.md)
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- [`docs/PRD.md`](docs/PRD.md)
+- [`docs/DATABASE.md`](docs/DATABASE.md)
+- [`docs/API.md`](docs/API.md)
+- [`docs/SECURITY.md`](docs/SECURITY.md)
 
 ---
 
@@ -169,9 +169,9 @@ For the overall system architecture, see:
 
 Make sure you have:
 
-* Node.js `20.19+`
-* npm `10+`
-* A Supabase project
+- Node.js `20.19+`
+- npm `10+`
+- A Supabase project
 
 For local Supabase development, you will also need the Supabase CLI and Docker.
 
@@ -252,13 +252,13 @@ Security is an important part of the project because guest users can submit memo
 
 OurPages is designed around the following principles:
 
-* Supabase Auth handles account authentication.
-* Row Level Security (RLS) protects user-owned data.
-* Guest submissions are validated on the server.
-* Owner-controlled fields cannot be modified by guests.
-* Rate limiting and basic anti-spam protection are applied to public submission endpoints.
-* Sensitive Supabase credentials remain server-side.
-* `SUPABASE_SERVICE_ROLE_KEY` is never exposed to client-side code.
+- Supabase Auth handles account authentication.
+- Row Level Security (RLS) protects user-owned data.
+- Guest submissions are validated on the server.
+- Owner-controlled fields cannot be modified by guests.
+- Rate limiting and basic anti-spam protection are applied to public submission endpoints.
+- Sensitive Supabase credentials remain server-side.
+- `SUPABASE_SERVICE_ROLE_KEY` is never exposed to client-side code.
 
 ---
 
@@ -268,72 +268,65 @@ OurPages is being developed incrementally rather than building the entire produc
 
 ### Phase 1 — Project Foundation
 
-* Repository structure
-* React + Vite setup
-* Express API
-* Development tooling
-* Initial documentation
+- Repository structure
+- React + Vite setup
+- Express API
+- Development tooling
+- Initial documentation
 
 ### Phase 2 — Backend & Authentication
 
-* Supabase PostgreSQL
-* Database schema
-* Row Level Security
-* User registration & sign-in
-* Session management
-* Guest-submission API foundation
+- Supabase PostgreSQL
+- Database schema
+- Row Level Security
+- User registration & sign-in
+- Session management
+- Guest-submission API foundation
 
 ### Phase 3 — Public Memory Book
 
-* Personal `/u/:username` pages
-* Public profile
-* Guest memory submission
-* Memory prompts
-* Open / closed / private book states
-* Public-page responsive UI
+- Personal `/u/:username` pages
+- Public profile
+- Guest memory submission
+- Memory prompts
+- Open / closed / private book states
+- Public-page responsive UI
 
 ### Phase 4 — Owner Dashboard
 
-* Received memory list
-* Favorite / pin / hide / delete
-* Search and filtering
-* Profile management
-* Memory-book settings
-* Shareable personal link
+- Received memory list
+- Favorite / pin / hide / delete
+- Search and filtering
+- Profile management
+- Memory-book settings
+- Shareable personal link
 
 ### Future
 
-* 📷 Photo memories
-* 🎓 Graduation / farewell mode
-* 🔗 QR codes
-* 📄 PDF memory-book export
-* 🎙️ Voice memories
-* 💌 More personalization options
+- 📷 Photo memories
+- 🎓 Graduation / farewell mode
+- 🔗 QR codes
+- 📄 PDF memory-book export
+- 🎙️ Voice memories
+- 💌 More personalization options
 
 ---
 
 ## 🧭 Current Status
 
-**Development Status: Early MVP**
-
-The project currently has the foundational backend and authentication infrastructure in place.
+**Development Status: Phase 4 complete**
 
 Implemented:
 
-* ✅ Supabase database schema
-* ✅ Row Level Security
-* ✅ Authentication forms
-* ✅ Authentication session state
-* ✅ Protected dashboard foundation
-* ✅ Guest-submission API foundation
-* ✅ Input validation and security foundations
+- ✅ Supabase database schema and Row Level Security
+- ✅ Registration, sign-in, and protected sessions
+- ✅ Public memory-book pages and guest submissions
+- ✅ Memory prompts and open, closed, or private book states
+- ✅ Owner dashboard with statistics and recent memories
+- ✅ Search, filtering, favorite, pin, hide, and delete controls
+- ✅ Profile settings and shareable personal links
 
-Still being developed:
-
-* 🚧 Final public memory-book experience
-* 🚧 Owner dashboard
-* 🚧 Memory management interface
-* 🚧 Personalization and extended memory features
+Personalization and extended memory features remain on the future roadmap.
 
 ---
 

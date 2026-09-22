@@ -40,12 +40,19 @@ export async function getPublicBook(
     .order('created_at', { ascending: false });
   if (memoryError)
     throw new AppError(500, 'DATABASE_ERROR', 'Could not load memories');
-  return { profile, prompts, memories };
+  const publicProfile = { ...profile };
+  delete publicProfile.id;
+  return { profile: publicProfile, prompts, memories };
 }
 
 export async function getActivePrompts(database = getSupabasePublicClient()) {
-  const { data, error } = await database.from('prompts').select('id, text, category').eq('is_active', true).order('category');
-  if (error) throw new AppError(500, 'DATABASE_ERROR', 'Could not load prompts');
+  const { data, error } = await database
+    .from('prompts')
+    .select('id, text, category')
+    .eq('is_active', true)
+    .order('category');
+  if (error)
+    throw new AppError(500, 'DATABASE_ERROR', 'Could not load prompts');
   return data;
 }
 

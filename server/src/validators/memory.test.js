@@ -36,7 +36,19 @@ describe('public memory validation', () => {
 
   it('rejects messages longer than the public 2,000 character limit', () => {
     expect(() =>
-      validateMemorySubmission({ authorName: 'May', message: 'a'.repeat(2001) }),
+      validateMemorySubmission({
+        authorName: 'May',
+        message: 'a'.repeat(2001),
+      }),
     ).toThrow('between 1 and 2000');
+  });
+
+  it('rejects malformed anonymous and author-name values', () => {
+    expect(() =>
+      validateMemorySubmission({ message: 'Hello', isAnonymous: 'true' }),
+    ).toThrow('boolean');
+    expect(() =>
+      validateMemorySubmission({ message: 'Hello', authorName: 42 }),
+    ).toThrow('must be text');
   });
 });

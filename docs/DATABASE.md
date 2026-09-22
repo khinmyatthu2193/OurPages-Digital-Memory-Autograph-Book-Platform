@@ -16,6 +16,8 @@ Deleting an Auth user cascades to the profile and owned memories. Deleting a pro
 
 `memories` contains a UUID, required owner, optional author name for anonymous submissions, message, anonymity flag, optional prompt/photo URL, owner moderation flags, and timestamps. Phase 3 constrains messages to 1–2,000 nonblank characters and requires an author name for non-anonymous messages.
 
+Phase 4 uses the existing `is_favorite`, `is_pinned`, and `is_hidden` columns for owner management. It introduces no new tables or moderation relationships. Owner queries order pinned memories first and newest memories within each group.
+
 `prompts` contains a UUID, unique prompt text, category, active flag, and timestamps. Allowed initial categories are `memory`, `friendship`, `graduation`, `future`, and `fun`.
 
 All three tables use triggers to maintain `updated_at`. Registration uses a security-definer trigger with an empty search path to create exactly one profile for each new Auth user.
@@ -43,6 +45,8 @@ RLS is enabled on every application table.
 | memories | DELETE    | Owner match                                                       |
 
 There is no public memory SELECT or INSERT policy. Inserts are revoked from `anon` and `authenticated`; validated guest writes are performed only by Express. Profile insert/delete and prompt mutation privileges are also revoked from browser roles.
+
+Anonymous profile reads have column-level grants for public display fields only. The Auth user UUID remains available to the owner/server workflow but is not readable through the anonymous table role or public-book API.
 
 ## Seed data
 

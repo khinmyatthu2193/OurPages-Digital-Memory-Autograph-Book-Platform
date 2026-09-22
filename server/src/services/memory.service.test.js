@@ -7,7 +7,8 @@ function query(result) {
     chain[method] = vi.fn(() => chain);
   chain.maybeSingle = vi.fn(async () => result);
   chain.single = vi.fn(async () => result);
-  chain.then = (resolve, reject) => Promise.resolve(result).then(resolve, reject);
+  chain.then = (resolve, reject) =>
+    Promise.resolve(result).then(resolve, reject);
   return chain;
 }
 
@@ -49,7 +50,10 @@ describe('public memory service', () => {
   });
 
   it('queries memories with an explicit hidden-memory exclusion', async () => {
-    const profileQuery = query({ data: { id: 'owner-1', username: 'khin' }, error: null });
+    const profileQuery = query({
+      data: { id: 'owner-1', username: 'khin' },
+      error: null,
+    });
     const promptQuery = query({ data: [], error: null });
     const memoryQuery = query({ data: [], error: null });
     const queries = [profileQuery, promptQuery, memoryQuery];
@@ -58,6 +62,7 @@ describe('public memory service', () => {
     const book = await getPublicBook('khin', database);
 
     expect(book.memories).toEqual([]);
+    expect(book.profile).toEqual({ username: 'khin' });
     expect(memoryQuery.eq).toHaveBeenCalledWith('is_hidden', false);
     expect(memoryQuery.select).toHaveBeenCalledWith(
       'id, author_name, message, is_anonymous, prompt_id, created_at',

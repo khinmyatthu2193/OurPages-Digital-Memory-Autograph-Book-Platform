@@ -9,6 +9,15 @@ const migrationPath = fileURLToPath(
   ),
 );
 const sql = readFileSync(migrationPath, 'utf8');
+const publicProfileSql = readFileSync(
+  fileURLToPath(
+    new URL(
+      '../../supabase/migrations/202609220001_public_profile_columns.sql',
+      import.meta.url,
+    ),
+  ),
+  'utf8',
+);
 
 describe('database authorization migration', () => {
   it.each(['profiles', 'prompts', 'memories'])('enables RLS on %s', (table) => {
@@ -41,5 +50,15 @@ describe('database authorization migration', () => {
     expect(sql).toContain(
       'constraint profiles_username_unique unique (username)',
     );
+  });
+
+  it('does not grant anonymous access to the profile Auth user ID', () => {
+    expect(publicProfileSql).toContain(
+      'revoke select on table public.profiles from anon',
+    );
+    expect(publicProfileSql).toContain(
+      'grant select (display_name, username, bio, avatar_url, memory_book_status)',
+    );
+    expect(publicProfileSql).not.toMatch(/grant select \([^)]*\bid\b/);
   });
 });
