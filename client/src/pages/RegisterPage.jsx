@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth-context.js';
 import AuthForm from '../components/AuthForm.jsx';
 import { validateUsername } from '../utils/username.js';
@@ -9,14 +9,19 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
     setNotice('');
+    setSubmitting(true);
     const values = new FormData(event.currentTarget);
     const username = validateUsername(String(values.get('username')));
-    if (!username.valid) return setError(username.error);
+    if (!username.valid) {
+      setSubmitting(false);
+      return setError(username.error);
+    }
     try {
       const data = await register({
         displayName: String(values.get('displayName')).trim(),
@@ -25,19 +30,25 @@ export default function RegisterPage() {
         password: values.get('password'),
       });
       if (data.session) navigate('/dashboard', { replace: true });
-      else setNotice('Check your email to confirm your account, then log in.');
+      else {
+        setNotice('Check your email to confirm your account, then log in.');
+        setSubmitting(false);
+      }
     } catch (authError) {
       const message = authError.message?.toLowerCase().includes('database')
         ? 'That username is unavailable or the profile details are invalid.'
         : authError.message;
       setError(message || 'Registration failed');
+      setSubmitting(false);
     }
   }
 
   return (
     <AuthForm
-      title="Register"
+      title="Create your memory book"
+      subtitle="A personal place for stories, notes, and moments worth keeping."
       submitLabel="Create account"
+      submitting={submitting}
       error={error}
       onSubmit={handleSubmit}
     >
@@ -47,40 +58,32 @@ export default function RegisterPage() {
         </p>
       )}
       {notice && <p role="status">{notice}</p>}
-      <label className="grid gap-1">
+      <label>
         Display name
-        <input
-          className="rounded-xl border p-3"
-          name="displayName"
-          maxLength="100"
-          required
-        />
+        <input name="displayName" maxLength="100" required />
       </label>
-      <label className="grid gap-1">
+      <label>
         Username
         <input
-          className="rounded-xl border p-3"
           name="username"
           minLength="3"
           maxLength="30"
           autoComplete="username"
+          aria-describedby="username-help"
           required
         />
       </label>
-      <label className="grid gap-1">
+      <p className="auth-field-note" id="username-help">
+        3–30 lowercase letters, numbers, or underscores. It will not be changed
+        silently.
+      </p>
+      <label>
         Email
-        <input
-          className="rounded-xl border p-3"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-        />
+        <input name="email" type="email" autoComplete="email" required />
       </label>
-      <label className="grid gap-1">
+      <label>
         Password
         <input
-          className="rounded-xl border p-3"
           name="password"
           type="password"
           minLength="8"
@@ -88,6 +91,9 @@ export default function RegisterPage() {
           required
         />
       </label>
+      <p className="auth-switch">
+        Already have a book? <Link to="/login">Log in</Link>
+      </p>
     </AuthForm>
   );
 }

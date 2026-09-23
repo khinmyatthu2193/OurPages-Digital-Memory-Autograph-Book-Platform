@@ -14,9 +14,17 @@ Every dashboard API requires a verified Supabase Bearer token. Express derives t
 
 ## Public submissions
 
-The implemented boundary includes strict field allow-listing, type/length checks (including the anonymous boolean), trimming, UUID validation, active-prompt verification, open-book verification, a honeypot included in the browser form, a 100 KB JSON limit, and per-IP rate limiting. Messages are capped at 2,000 characters and names at 100. Public reads have a separate allow-list and explicitly filter `is_hidden = false`; they never return owner IDs or moderation flags. React renders content as text, never visitor HTML. Do not add photo writes without a separate storage validation/policy design.
+The implemented boundary includes strict field allow-listing, type/length checks, trimming, UUID validation, active-prompt verification, open-book verification, a honeypot, request limits, and per-IP rate limiting. Messages are capped at 2,000 characters and names at 100. Photo uploads are limited to one 5 MB in-memory part and must match both an allowed MIME type and JPEG/PNG/WebP binary signature. Guests cannot choose owner IDs, bucket names, paths, or moderation flags. Original filenames are not used in storage paths.
+
+The `memory-photos` bucket is private and has no anon/authenticated object policy. Only the server service role uploads, signs, and removes objects. Public memory queries filter `is_hidden = false` before signing and strip internal paths; owner queries require bearer authentication and owner RLS. Signed URLs expire after ten minutes, bounding access if a visible memory is subsequently hidden. Deletion performs best-effort object cleanup, and failed database inserts trigger compensating cleanup. Phase 7 stores originals without image transcoding, so EXIF stripping and derived thumbnails remain future hardening/performance work.
 
 Rate limiting is process-local in Phase 2. Before horizontally scaled production, use a shared rate-limit store and configure Express `trust proxy` only for the known proxy topology. Add telemetry, progressive bot friction, privacy/retention rules, and incident-response ownership before launch.
+
+## Public metadata
+
+Public-page titles and descriptions are derived only from the allow-listed public display name. Memory text, author names, hidden content, counts, and private profiles are never used in metadata. Private books continue to return the same response as unknown books.
+
+Graduation metadata adds only the public mode label to that display-name-based copy; it does not use memories, email, owner IDs, or hidden content. Graduation settings use the existing authenticated profile endpoint and owner RLS policy. Guest memory payload allow-listing is unchanged, so guests cannot set profile mode/details. Generated QR images contain only the absolute public `/u/:username` URL and are produced locally in the owner's browser.
 
 ## HTTP and errors
 

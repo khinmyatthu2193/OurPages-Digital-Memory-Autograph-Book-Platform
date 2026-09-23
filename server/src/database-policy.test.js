@@ -18,6 +18,24 @@ const publicProfileSql = readFileSync(
   ),
   'utf8',
 );
+const graduationSql = readFileSync(
+  fileURLToPath(
+    new URL(
+      '../../supabase/migrations/202609240001_graduation_farewell_mode.sql',
+      import.meta.url,
+    ),
+  ),
+  'utf8',
+);
+const photoSql = readFileSync(
+  fileURLToPath(
+    new URL(
+      '../../supabase/migrations/202609250001_photo_memories.sql',
+      import.meta.url,
+    ),
+  ),
+  'utf8',
+);
 
 describe('database authorization migration', () => {
   it.each(['profiles', 'prompts', 'memories'])('enables RLS on %s', (table) => {
@@ -60,5 +78,36 @@ describe('database authorization migration', () => {
       'grant select (display_name, username, bio, avatar_url, memory_book_status)',
     );
     expect(publicProfileSql).not.toMatch(/grant select \([^)]*\bid\b/);
+  });
+
+  it('defaults existing profiles to standard mode without changing owner RLS', () => {
+    expect(graduationSql).toContain(
+      "memory_book_mode public.memory_book_mode not null default 'standard'",
+    );
+    expect(graduationSql).toContain('graduation_title');
+    expect(graduationSql).toContain('graduation_message');
+    expect(graduationSql).not.toMatch(/create policy/i);
+    expect(graduationSql).not.toMatch(/grant (insert|update|delete)[^(]/i);
+  });
+
+  it('grants anonymous readers only intentional graduation display columns', () => {
+    expect(graduationSql).toContain(
+      'revoke select on table public.profiles from anon',
+    );
+    expect(graduationSql).toContain('memory_book_mode');
+    expect(graduationSql).not.toMatch(/grant select \([^)]*\bid\b/);
+    expect(graduationSql).not.toContain('email');
+  });
+
+  it('adds graduation prompts without removing standard prompts', () => {
+    expect(graduationSql).toContain("'graduation'");
+    expect(sql).toContain("category in ('memory', 'friendship', 'graduation'");
+  });
+
+  it('keeps memory photos in a private bucket with no guest object policy', () => {
+    expect(photoSql).toContain("'memory-photos', 'memory-photos', false");
+    expect(photoSql).toContain('5242880');
+    expect(photoSql).not.toMatch(/create policy/i);
+    expect(photoSql).toContain('submission_token uuid');
   });
 });

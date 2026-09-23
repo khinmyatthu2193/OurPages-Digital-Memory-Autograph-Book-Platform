@@ -18,6 +18,7 @@ export function validateMemorySubmission(body) {
     'isAnonymous',
     'promptId',
     'website',
+    'submissionId',
   ]);
   const unexpected = Object.keys(body).filter((key) => !allowed.has(key));
   if (unexpected.length) {
@@ -64,11 +65,19 @@ export function validateMemorySubmission(body) {
   ) {
     throw new AppError(400, 'VALIDATION_ERROR', 'Prompt ID must be a UUID');
   }
+  if (
+    body.submissionId != null &&
+    (typeof body.submissionId !== 'string' ||
+      !UUID_PATTERN.test(body.submissionId))
+  ) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Submission ID must be a UUID');
+  }
 
   return {
     author_name: isAnonymous ? null : authorName,
     message,
     is_anonymous: isAnonymous,
     prompt_id: body.promptId ?? null,
+    submission_token: body.submissionId ?? null,
   };
 }

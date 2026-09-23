@@ -45,4 +45,58 @@ describe('owner profile service', () => {
       updateCurrentProfile('owner-1', { username: 'changed' }, {}),
     ).rejects.toMatchObject({ status: 400 });
   });
+
+  it('updates optional graduation mode details for the authenticated owner', async () => {
+    const chain = query({
+      data: { memory_book_mode: 'graduation' },
+      error: null,
+    });
+    await updateCurrentProfile(
+      'owner-1',
+      {
+        memory_book_mode: 'graduation',
+        graduation_title: ' Final Year Farewell ',
+        graduation_class: ' Class A ',
+        graduation_year: 2026,
+        graduation_message: '',
+      },
+      { from: vi.fn(() => chain) },
+    );
+    expect(chain.update).toHaveBeenCalledWith({
+      memory_book_mode: 'graduation',
+      graduation_title: 'Final Year Farewell',
+      graduation_class: 'Class A',
+      graduation_year: 2026,
+      graduation_message: null,
+    });
+    expect(chain.eq).toHaveBeenCalledWith('id', 'owner-1');
+  });
+
+  it('allows returning to standard mode and rejects invalid graduation data', async () => {
+    const chain = query({
+      data: { memory_book_mode: 'standard' },
+      error: null,
+    });
+    await updateCurrentProfile(
+      'owner-1',
+      { memory_book_mode: 'standard' },
+      { from: vi.fn(() => chain) },
+    );
+    expect(chain.update).toHaveBeenCalledWith({ memory_book_mode: 'standard' });
+
+    await expect(
+      updateCurrentProfile(
+        'owner-1',
+        { graduation_year: 1800 },
+        { from: vi.fn(() => chain) },
+      ),
+    ).rejects.toMatchObject({ status: 400, code: 'VALIDATION_ERROR' });
+    await expect(
+      updateCurrentProfile(
+        'owner-1',
+        { memory_book_mode: 'party' },
+        { from: vi.fn(() => chain) },
+      ),
+    ).rejects.toMatchObject({ status: 400, code: 'VALIDATION_ERROR' });
+  });
 });

@@ -19,16 +19,31 @@ export default function MyPagePage() {
             {profile.display_name.charAt(0).toUpperCase()}
           </div>
         )}
-        <p className="dashboard-eyebrow">OurPages memory book</p>
-        <h2>{profile.display_name}&apos;s OurPages</h2>
+        <p className="dashboard-eyebrow">
+          {profile.memory_book_mode === 'graduation'
+            ? 'Graduation / farewell mode'
+            : 'OurPages memory book'}
+        </p>
+        <h2>
+          {profile.memory_book_mode === 'graduation'
+            ? profile.graduation_title ||
+              `${profile.display_name}'s farewell book`
+            : `${profile.display_name}'s OurPages`}
+        </h2>
         <p className="profile-username">@{profile.username}</p>
         <p>
-          {profile.bio ||
-            'Add a short bio in Settings to make your page feel more personal.'}
+          {(profile.memory_book_mode === 'graduation' &&
+            (profile.graduation_message || profile.graduation_class)) ||
+            profile.bio ||
+            'Add a short note in Settings to make your page feel more personal.'}
         </p>
       </section>
       <div className="dashboard-overview-grid">
-        <ShareLinkCard username={profile.username} />
+        <ShareLinkCard
+          username={profile.username}
+          displayName={profile.display_name}
+          mode={profile.memory_book_mode}
+        />
         <BookStatusCard
           status={profile.memory_book_status}
           onChange={(status) => updateProfile({ memory_book_status: status })}

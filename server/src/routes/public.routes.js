@@ -5,6 +5,7 @@ import {
   getPrompts,
   submitMemory,
 } from '../controllers/public.controller.js';
+import { parseMemoryPhoto } from '../middleware/memory-photo-upload.js';
 
 const publicRouter = Router();
 const submissionLimiter = rateLimit({
@@ -22,6 +23,11 @@ const submissionLimiter = rateLimit({
 
 publicRouter.get('/prompts', getPrompts);
 publicRouter.get('/:username', getBook);
-publicRouter.post('/:username/memories', submissionLimiter, submitMemory);
+publicRouter.post(
+  '/:username/memories',
+  submissionLimiter,
+  parseMemoryPhoto,
+  submitMemory,
+);
 
 export default publicRouter;

@@ -104,7 +104,12 @@ export default function MemoriesPage() {
               : 'Share your personal page with your friends and their messages will appear here.'}
           </p>
           {memories.length === 0 && (
-            <ShareLinkCard username={profile.username} compact />
+            <ShareLinkCard
+              username={profile.username}
+              displayName={profile.display_name}
+              mode={profile.memory_book_mode}
+              compact
+            />
           )}
         </div>
       )}

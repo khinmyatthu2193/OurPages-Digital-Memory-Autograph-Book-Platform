@@ -30,7 +30,11 @@ export default function DashboardPage() {
         ))}
       </section>
       <div className="dashboard-overview-grid">
-        <ShareLinkCard username={profile.username} />
+        <ShareLinkCard
+          username={profile.username}
+          displayName={profile.display_name}
+          mode={profile.memory_book_mode}
+        />
         <BookStatusCard
           status={profile.memory_book_status}
           onChange={(status) => updateProfile({ memory_book_status: status })}

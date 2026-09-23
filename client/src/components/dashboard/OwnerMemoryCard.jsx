@@ -1,5 +1,7 @@
 ﻿import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useToast } from '../feedback/toast-context.js';
+import MemoryPhoto from '../public/MemoryPhoto.jsx';
 
 const PREVIEW_LENGTH = 360;
 
@@ -13,21 +15,36 @@ export default function OwnerMemoryCard({
   const [busyAction, setBusyAction] = useState('');
   const [error, setError] = useState('');
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const { notify } = useToast();
+  const cancelDeleteRef = useRef(null);
   const long = memory.message.length > PREVIEW_LENGTH;
   const message =
     long && !expanded
       ? `${memory.message.slice(0, PREVIEW_LENGTH).trim()}…`
       : memory.message;
 
+  useEffect(() => {
+    if (confirmingDelete) cancelDeleteRef.current?.focus();
+  }, [confirmingDelete]);
+
   async function update(action, updates) {
     setBusyAction(action);
     setError('');
     try {
       await onUpdate(memory.id, updates);
+      const messages = {
+        favorite: updates.is_favorite ? 'Memory favorited' : 'Favorite removed',
+        pin: updates.is_pinned ? 'Memory pinned' : 'Memory unpinned',
+        hide: updates.is_hidden
+          ? 'Memory hidden from your public page'
+          : 'Memory made public',
+      };
+      notify(messages[action]);
     } catch (mutationError) {
       setError(
         mutationError.message || 'Something went wrong. Please try again.',
       );
+      notify('Could not update this memory', 'error');
     } finally {
       setBusyAction('');
     }
@@ -38,8 +55,10 @@ export default function OwnerMemoryCard({
     setError('');
     try {
       await onDelete(memory.id);
+      notify('Memory deleted');
     } catch (mutationError) {
       setError(mutationError.message || 'Could not delete this memory.');
+      notify('Could not delete this memory', 'error');
       setBusyAction('');
     }
   }
@@ -65,6 +84,13 @@ export default function OwnerMemoryCard({
           {memory.is_hidden && <span>Hidden</span>}
         </div>
       </div>
+      {memory.photo_url && (
+        <MemoryPhoto
+          src={memory.photo_url}
+          author={memory.is_anonymous ? 'Anonymous' : memory.author_name}
+          owner
+        />
+      )}
       <p className="owner-memory-message">“{message}”</p>
       {long && (
         <button
@@ -137,12 +163,23 @@ export default function OwnerMemoryCard({
         <div
           className="delete-confirmation"
           role="alertdialog"
+          aria-modal="true"
           aria-labelledby={`delete-title-${memory.id}`}
+          aria-describedby={`delete-description-${memory.id}`}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape' && busyAction !== 'delete') {
+              event.preventDefault();
+              setConfirmingDelete(false);
+            }
+          }}
         >
           <h3 id={`delete-title-${memory.id}`}>Delete this memory?</h3>
-          <p>This action cannot be undone.</p>
+          <p id={`delete-description-${memory.id}`}>
+            This action cannot be undone.
+          </p>
           <div className="dashboard-actions">
             <button
+              ref={cancelDeleteRef}
               className="dashboard-button secondary"
               disabled={busyAction === 'delete'}
               type="button"
