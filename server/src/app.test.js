@@ -29,6 +29,7 @@ describe('API foundation', () => {
   });
 
   it.each([
+    ['patch', '/api/profile/me'],
     ['get', '/api/memories'],
     ['patch', '/api/memories/11111111-1111-4111-8111-111111111111'],
     ['delete', '/api/memories/11111111-1111-4111-8111-111111111111'],

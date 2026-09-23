@@ -9,7 +9,7 @@ describe('application routes', () => {
   it.each([
     ['/', 'Memories worth keeping.'],
     ['/login', 'Log in'],
-    ['/register', 'Register'],
+    ['/register', 'Create your memory book'],
     ['/u/khin', "Khin's OurPages"],
   ])('renders %s', async (path, heading) => {
     if (path === '/u/khin') {
@@ -104,9 +104,7 @@ describe('application routes', () => {
       </MemoryRouter>,
     );
     expect(
-      await screen.findByText(
-        'This memory book is currently closed to new messages.',
-      ),
+      await screen.findByText('This memory book is currently closed.'),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Leave a Memory' }),
@@ -157,5 +155,87 @@ describe('application routes', () => {
         name: 'Your memory has been added.',
       }),
     ).toBeInTheDocument();
+  });
+
+  it('renders graduation mode with farewell copy and prioritized prompts', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          data: {
+            profile: {
+              display_name: 'Khin',
+              username: 'khin',
+              bio: 'A personal bio',
+              avatar_url: null,
+              memory_book_status: 'open',
+              memory_book_mode: 'graduation',
+              graduation_title: 'Final Year Farewell',
+              graduation_class: 'Class A',
+              graduation_year: 2026,
+              graduation_message: 'Thank you for being part of this chapter.',
+            },
+            prompts: [
+              { id: 'general', text: 'A general prompt', category: 'memory' },
+              {
+                id: 'farewell',
+                text: 'What will you miss?',
+                category: 'graduation',
+              },
+            ],
+            memories: [],
+          },
+        }),
+      }),
+    );
+    render(
+      <MemoryRouter initialEntries={['/u/khin']}>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(
+      await screen.findByRole('heading', { name: 'Final Year Farewell' }),
+    ).toBeInTheDocument();
+    expect(document.title).toBe("Khin's Farewell Memory Book | OurPages");
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Leave a Farewell Memory' }),
+    );
+    expect(screen.getAllByRole('radio')[1]).toHaveAccessibleName(
+      'What will you miss?',
+    );
+    fireEvent.click(screen.getByLabelText('Post anonymously'));
+    fireEvent.change(screen.getByLabelText('Your memory'), {
+      target: { value: 'Until our next chapter.' },
+    });
+    fireEvent.submit(screen.getByRole('dialog').querySelector('form'));
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Your farewell memory has been added.',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('treats private books like missing books without exposing memories', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: { code: 'BOOK_NOT_FOUND', message: 'Memory book not found' },
+        }),
+      }),
+    );
+    render(
+      <MemoryRouter initialEntries={['/u/private-owner']}>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(
+      await screen.findByRole('heading', {
+        name: "This OurPages page doesn't exist.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/memories collected/i)).not.toBeInTheDocument();
   });
 });

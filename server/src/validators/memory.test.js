@@ -14,6 +14,7 @@ describe('public memory validation', () => {
       message: 'Hello',
       is_anonymous: false,
       prompt_id: null,
+      submission_token: null,
     });
   });
 

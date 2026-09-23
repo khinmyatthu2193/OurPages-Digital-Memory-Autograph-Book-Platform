@@ -80,6 +80,14 @@ describe('memory management page', () => {
     expect(screen.getByRole('alertdialog')).toHaveTextContent(
       'cannot be undone',
     );
+    expect(
+      within(screen.getByRole('alertdialog')).getByRole('button', {
+        name: 'Cancel',
+      }),
+    ).toHaveFocus();
+    fireEvent.keyDown(screen.getByRole('alertdialog'), { key: 'Escape' });
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    fireEvent.click(card.getByRole('button', { name: 'Delete' }));
     fireEvent.click(
       within(screen.getByRole('alertdialog')).getByRole('button', {
         name: 'Delete',

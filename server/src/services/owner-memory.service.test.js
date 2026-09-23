@@ -79,7 +79,7 @@ describe('owner memory service', () => {
     const chain = query({ data: { id: memoryId }, error: null });
     await expect(
       deleteOwnedMemory('owner-1', memoryId, { from: vi.fn(() => chain) }),
-    ).resolves.toEqual({ id: memoryId });
+    ).resolves.toEqual({ id: memoryId, photo_cleanup_failed: false });
     expect(chain.delete).toHaveBeenCalledOnce();
     expect(chain.eq).toHaveBeenCalledWith('owner_id', 'owner-1');
   });
@@ -89,5 +89,24 @@ describe('owner memory service', () => {
     await expect(
       deleteOwnedMemory('owner-1', memoryId, { from: vi.fn(() => chain) }),
     ).rejects.toMatchObject({ status: 404 });
+  });
+
+  it('cleans up the private photo after deleting its memory', async () => {
+    const path = `owner-1/${memoryId}/photo.jpg`;
+    const chain = query({
+      data: { id: memoryId, photo_path: path },
+      error: null,
+    });
+    const remove = vi.fn(async () => ({ error: null }));
+    const storage = { from: vi.fn(() => ({ remove })) };
+    await expect(
+      deleteOwnedMemory(
+        'owner-1',
+        memoryId,
+        { from: vi.fn(() => chain) },
+        storage,
+      ),
+    ).resolves.toEqual({ id: memoryId, photo_cleanup_failed: false });
+    expect(remove).toHaveBeenCalledWith([path]);
   });
 });
