@@ -4,16 +4,30 @@
   --color-paper: #fffaf0;
   --color-ink: #3d302b;
   --color-rosewood: #8f4f55;
+  --color-surface: #fffdf8;
+  --color-muted: #756158;
+  --color-line: #e5d5c5;
+  --color-success: #397153;
+  --color-warning: #97622d;
+  --color-danger: #9d3636;
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   body {
-    @apply m-0 min-w-0 bg-paper text-ink antialiased;
+    @apply m-0 min-w-0 overflow-x-hidden bg-paper text-ink antialiased;
   }
 
   a {
     @apply underline-offset-4;
+  }
+
+  button,
+  input,
+  textarea,
+  select,
+  a {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rosewood;
   }
 }
 
@@ -25,6 +39,49 @@
   }
   .book-hero {
     @apply rounded-[2rem] bg-[#f4e4cf] px-6 py-10 text-center shadow-[0_18px_50px_rgba(90,53,37,.12)] sm:px-12;
+  }
+  .graduation-hero {
+    @apply relative overflow-hidden border border-[#dfc1ad] bg-[#f7e8d8];
+  }
+  .graduation-hero::before,
+  .graduation-hero::after {
+    content: '';
+    @apply pointer-events-none absolute rounded-full border border-[#c9957e]/40;
+  }
+  .graduation-hero::before {
+    @apply -right-24 -top-24 h-52 w-52;
+  }
+  .graduation-hero::after {
+    @apply -bottom-28 -left-24 h-56 w-56;
+  }
+  .graduation-hero > * {
+    @apply relative z-[1];
+  }
+  .graduation-class {
+    @apply mx-auto mt-3 max-w-lg break-words text-sm font-bold uppercase tracking-[.12em] text-[#765047];
+    overflow-wrap: anywhere;
+  }
+  .graduation-hero h1,
+  .graduation-name,
+  .graduation-message {
+    overflow-wrap: anywhere;
+  }
+  .graduation-rule {
+    @apply mx-auto my-6 flex max-w-36 items-center gap-3 text-[#b37460];
+  }
+  .graduation-rule::before,
+  .graduation-rule::after {
+    content: '';
+    @apply h-px flex-1 bg-[#c9957e];
+  }
+  .graduation-hero .avatar {
+    @apply h-20 w-20;
+  }
+  .graduation-name {
+    @apply m-0 break-words font-serif text-3xl leading-tight text-ink sm:text-4xl;
+  }
+  .graduation-message {
+    @apply font-serif text-lg italic;
   }
   .avatar {
     @apply mx-auto mb-5 h-24 w-24 rounded-full object-cover ring-4 ring-white;
@@ -55,6 +112,13 @@
   .status-note {
     @apply mx-auto mt-6 max-w-sm rounded-xl bg-white/70 px-4 py-3 text-sm text-[#68463b];
   }
+  .status-note strong,
+  .status-note span {
+    @apply block;
+  }
+  .status-note span {
+    @apply mt-1 leading-6;
+  }
   .memory-list {
     @apply py-12;
   }
@@ -62,29 +126,52 @@
     @apply m-0 font-serif text-3xl;
   }
   .memory-card {
-    @apply mt-5 rounded-2xl border border-[#ead8c4] bg-white p-6 shadow-sm;
+    @apply relative mt-5 overflow-hidden rounded-2xl border border-[#ead8c4] bg-[#fffdf8] p-6 shadow-[0_8px_24px_rgba(90,53,37,.06)] transition sm:p-7;
+  }
+  .memory-card::before {
+    content: '';
+    @apply absolute inset-y-0 left-0 w-1 bg-[#d7a48e];
   }
   .memory-from {
     @apply m-0 font-semibold text-rosewood;
   }
   .memory-message {
-    @apply mb-5 mt-3 whitespace-pre-wrap font-serif text-xl leading-8;
+    @apply mb-5 mt-3 whitespace-pre-wrap break-words font-serif text-xl leading-8;
+  }
+  .memory-prompt {
+    @apply mt-3 text-sm italic leading-6 text-[#806b61];
+  }
+  .memory-card .read-more {
+    @apply mb-5 -mt-2 block;
+  }
+  .print-message {
+    @apply hidden;
   }
   .memory-card time,
   .character-count {
     @apply text-sm text-[#806b61];
   }
   .no-memories {
-    @apply mt-5 rounded-2xl border border-dashed border-[#d9bea4] p-6 text-[#806b61];
+    @apply mt-5 rounded-2xl border border-dashed border-[#d9bea4] p-7 text-center text-[#806b61];
+  }
+  .no-memories h3 {
+    @apply font-serif text-2xl text-ink;
+  }
+  .no-memories p {
+    @apply mt-2;
   }
   .modal-backdrop {
     @apply fixed inset-0 z-50 overflow-y-auto bg-[#34231e]/55 p-3 sm:p-8;
   }
   .memory-modal {
     @apply relative mx-auto my-4 max-w-xl rounded-3xl bg-paper p-6 shadow-2xl sm:p-9;
+    animation: dialog-in 160ms ease-out;
   }
   .memory-modal h2 {
     @apply mt-0 font-serif text-3xl;
+  }
+  .form-intro {
+    @apply -mt-2 mb-6 max-w-md leading-6 text-[#756158];
   }
   .close-button {
     @apply absolute right-5 top-4 rounded-full px-2 text-3xl text-[#765b50] focus:outline-2 focus:outline-rosewood;
@@ -107,6 +194,61 @@
   .memory-modal fieldset {
     @apply mb-5 rounded-xl border border-[#ead8c4] p-3;
   }
+  .photo-field {
+    @apply mt-5;
+  }
+  .memory-modal .photo-input {
+    @apply sr-only;
+  }
+  .photo-picker {
+    @apply grid min-h-28 cursor-pointer place-items-center gap-1 rounded-xl border border-dashed border-[#caa990] bg-white/70 p-4 text-center transition hover:bg-white;
+  }
+  .photo-picker span {
+    @apply text-2xl font-normal text-rosewood;
+  }
+  .photo-picker strong {
+    @apply text-sm;
+  }
+  .photo-picker small {
+    @apply font-normal text-[#806b61];
+  }
+  .photo-preview {
+    @apply rounded-xl border border-[#ead8c4] bg-white p-3;
+  }
+  .photo-preview img {
+    @apply max-h-64 w-full rounded-lg object-contain;
+  }
+  .photo-preview p {
+    @apply my-2 truncate text-sm text-[#68544c];
+  }
+  .photo-preview > div {
+    @apply flex gap-2;
+  }
+  .photo-action {
+    @apply mb-0! cursor-pointer rounded-full border border-[#d4b9a4] bg-transparent px-4 py-2 text-xs font-bold! text-rosewood;
+  }
+  .memory-photo-button {
+    @apply mt-4 block w-full overflow-hidden rounded-xl border border-[#ead8c4] bg-[#f7efe7];
+  }
+  .memory-photo-button img {
+    @apply max-h-[26rem] w-full object-contain;
+  }
+  .memory-photo-button.owner-photo img {
+    @apply max-h-60;
+  }
+  .memory-photo-error,
+  .image-unavailable {
+    @apply mt-4 rounded-lg bg-[#f5ede5] p-3 text-sm text-[#756158];
+  }
+  .image-viewer-backdrop {
+    @apply fixed inset-0 z-[100] grid place-items-center bg-[#241915]/90 p-4 sm:p-10;
+  }
+  .image-viewer-backdrop img {
+    @apply max-h-[90vh] max-w-full rounded-xl object-contain shadow-2xl;
+  }
+  .image-viewer-close {
+    @apply absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white text-3xl leading-none text-ink shadow-lg sm:right-7 sm:top-7;
+  }
   .memory-modal legend span {
     @apply font-normal text-[#806b61];
   }
@@ -128,6 +270,13 @@
   }
   .success-book > span {
     @apply text-5xl text-rosewood;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
   }
 }
 
@@ -345,10 +494,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-button,
-  .site-register,
-  .site-login {
-    transition: none;
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -499,6 +651,9 @@
   .share-url {
     @apply mt-5 w-full rounded-xl border border-[#dfcbbb] bg-[#faf2e9] px-4 py-3 text-sm text-[#694e45] outline-none focus:ring-2 focus:ring-rosewood;
   }
+  .share-description {
+    @apply mt-3 max-w-xl text-sm leading-6 text-[#756158];
+  }
   .share-card.compact {
     @apply mt-6 text-left;
   }
@@ -543,7 +698,7 @@
     @apply lg:grid-cols-2;
   }
   .owner-memory-card {
-    @apply relative min-w-0 rounded-2xl border border-[#e3d2c1] bg-[#fffdf9] p-5 shadow-[0_7px_20px_rgba(87,55,43,.04)] sm:p-6;
+    @apply relative min-w-0 rounded-2xl border border-[#e3d2c1] bg-[#fffdf9] p-5 shadow-[0_7px_20px_rgba(87,55,43,.04)] transition sm:p-6;
   }
   .owner-memory-card.hidden {
     @apply border-dashed bg-[#f5eee7];
@@ -671,5 +826,181 @@
   }
   .settings-form .dashboard-button {
     @apply mt-2 justify-self-start;
+  }
+  .mode-settings,
+  .graduation-settings {
+    @apply mt-4 grid gap-3 rounded-2xl border border-[#e1cfbf] p-4 sm:p-5;
+  }
+  .mode-settings legend,
+  .graduation-settings legend {
+    @apply px-2 font-serif text-xl font-bold;
+  }
+  .settings-form .mode-option {
+    @apply flex! min-h-16 cursor-pointer items-start gap-3 rounded-xl border border-[#dfcbbb] bg-white p-4 transition hover:bg-[#fbf3eb];
+  }
+  .mode-option:has(input:checked) {
+    @apply border-rosewood bg-[#f7e8df] ring-1 ring-rosewood;
+  }
+  .mode-option input {
+    @apply mt-1 h-5 w-5 shrink-0 accent-[#8f4f55];
+  }
+  .mode-option span,
+  .mode-option strong,
+  .mode-option small {
+    @apply block;
+  }
+  .mode-option small {
+    @apply mt-1 font-normal leading-5 text-[#756158];
+  }
+  .graduation-settings > .field-note {
+    @apply mt-0 mb-2;
+  }
+}
+
+@layer components {
+  .auth-card {
+    @apply mx-auto my-10 max-w-md rounded-[2rem] border border-[#e5d5c5] bg-[#fffdf8] p-6 shadow-[0_18px_50px_rgba(90,53,37,.09)] sm:my-16 sm:p-9;
+  }
+  .auth-brand {
+    @apply mb-8 flex items-center gap-2 font-serif text-xl font-bold;
+  }
+  .auth-brand span {
+    @apply grid h-8 w-8 place-items-center rounded-full bg-rosewood font-sans text-base font-normal text-white;
+  }
+  .auth-card h1 {
+    @apply font-serif text-4xl leading-tight tracking-tight;
+  }
+  .auth-subtitle {
+    @apply mt-3 leading-7 text-[#756158];
+  }
+  .auth-form {
+    @apply mt-7 grid gap-4;
+  }
+  .auth-form label {
+    @apply grid gap-2 text-sm font-bold;
+  }
+  .auth-form input {
+    @apply min-h-12 w-full rounded-xl border border-[#d9c4b3] bg-white px-4 font-normal outline-none focus:ring-2 focus:ring-rosewood;
+  }
+  .auth-submit {
+    @apply mt-2 min-h-12 rounded-xl bg-rosewood px-4 py-3 font-bold text-white transition hover:bg-[#733f45] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .auth-error {
+    @apply rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800;
+  }
+  .auth-field-note {
+    @apply -mt-2 text-xs leading-5 text-[#816d63];
+  }
+  .auth-switch {
+    @apply mt-2 text-center text-sm text-[#756158];
+  }
+  .auth-switch a {
+    @apply font-bold text-rosewood;
+  }
+  .toast-region {
+    @apply pointer-events-none fixed inset-x-4 bottom-4 z-[70] flex flex-col items-center gap-2 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:items-end;
+  }
+  .toast {
+    @apply flex max-w-sm items-center gap-2 rounded-xl border border-[#c9dfd0] bg-[#f2faf5] px-4 py-3 text-sm font-semibold text-[#285b40] shadow-lg;
+    animation: dialog-in 160ms ease-out;
+  }
+  .toast > span {
+    @apply grid h-5 w-5 place-items-center rounded-full bg-[#397153] text-xs text-white;
+  }
+  .toast.error {
+    @apply border-red-200 bg-red-50 text-red-800;
+  }
+  .toast.error > span {
+    @apply bg-red-700;
+  }
+  .qr-dialog {
+    @apply relative mx-auto my-4 max-w-md rounded-3xl bg-paper p-6 text-center shadow-2xl sm:p-9;
+    animation: dialog-in 160ms ease-out;
+  }
+  .qr-dialog h2 {
+    @apply mt-2 font-serif text-3xl;
+  }
+  .qr-dialog > p:not(.dashboard-eyebrow):not(.qr-url) {
+    @apply mt-3 leading-6 text-[#756158];
+  }
+  .qr-code-frame {
+    @apply mx-auto mt-6 grid aspect-square w-full max-w-72 place-items-center rounded-2xl border border-[#dfcbbb] bg-white p-4;
+  }
+  .qr-code-frame img {
+    @apply h-full w-full;
+  }
+  .qr-loading {
+    @apply grid justify-items-center gap-3 text-sm text-[#756158];
+  }
+  .qr-url {
+    @apply mx-auto mt-4 max-w-full break-all text-sm font-semibold text-[#694e45];
+  }
+  .qr-dialog .dashboard-actions {
+    @apply justify-center;
+  }
+}
+
+@media (hover: hover) {
+  .memory-card:hover,
+  .owner-memory-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(90, 53, 37, 0.09);
+  }
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body {
+    background: white !important;
+    color: #241d1a !important;
+  }
+
+  .site-header,
+  .primary-button,
+  .read-more,
+  .toast-region,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .image-viewer-backdrop {
+    display: none !important;
+  }
+
+  .site-main,
+  .book-page {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .book-page {
+    min-height: auto !important;
+  }
+
+  .book-hero,
+  .memory-card,
+  .no-memories {
+    break-inside: avoid;
+    background: white !important;
+    box-shadow: none !important;
+  }
+
+  .memory-card {
+    overflow: visible;
+  }
+
+  .memory-card .screen-message:has(+ .print-message) {
+    display: none;
+  }
+
+  .print-message {
+    display: inline !important;
+  }
+
+  .memory-list {
+    padding-bottom: 0;
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/auth-context.js';
 import AuthForm from '../components/AuthForm.jsx';
 
@@ -8,10 +8,12 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
+    setSubmitting(true);
     const values = new FormData(event.currentTarget);
     try {
       await login({
@@ -20,14 +22,21 @@ export default function LoginPage() {
       });
       navigate(location.state?.from ?? '/dashboard', { replace: true });
     } catch (authError) {
-      setError(authError.message || 'Login failed');
+      setError(
+        authError.message?.toLowerCase().includes('invalid')
+          ? 'That email or password is not correct.'
+          : 'We could not sign you in. Please try again.',
+      );
+      setSubmitting(false);
     }
   }
 
   return (
     <AuthForm
       title="Log in"
+      subtitle="Come back to the memories that matter."
       submitLabel="Log in"
+      submitting={submitting}
       error={error}
       onSubmit={handleSubmit}
     >
@@ -36,26 +45,22 @@ export default function LoginPage() {
           Add the Vite Supabase environment variables to continue.
         </p>
       )}
-      <label className="grid gap-1">
+      <label>
         Email
-        <input
-          className="rounded-xl border p-3"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-        />
+        <input name="email" type="email" autoComplete="email" required />
       </label>
-      <label className="grid gap-1">
+      <label>
         Password
         <input
-          className="rounded-xl border p-3"
           name="password"
           type="password"
           autoComplete="current-password"
           required
         />
       </label>
+      <p className="auth-switch">
+        New to OurPages? <Link to="/register">Create your memory book</Link>
+      </p>
     </AuthForm>
   );
 }

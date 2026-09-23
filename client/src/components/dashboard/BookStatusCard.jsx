@@ -1,9 +1,11 @@
 ﻿import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useToast } from '../feedback/toast-context.js';
 
 export default function BookStatusCard({ status, onChange }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const { notify } = useToast();
   const open = status === 'open';
 
   async function toggleStatus() {
@@ -11,8 +13,10 @@ export default function BookStatusCard({ status, onChange }) {
     setError('');
     try {
       await onChange(open ? 'closed' : 'open');
+      notify(`Memory book ${open ? 'closed' : 'opened'}`);
     } catch (mutationError) {
       setError(mutationError.message || 'Could not update your book.');
+      notify('Could not update your memory book', 'error');
     } finally {
       setSaving(false);
     }
