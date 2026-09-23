@@ -42,23 +42,27 @@ Administrators are outside the MVP.
 4. The owner opens the authenticated dashboard and reviews received memories.
 5. The owner favorites, pins, hides, or deletes a memory.
 6. The owner updates their public name, bio, or avatar.
+7. The owner can optionally enable graduation/farewell mode, customize occasion details, and share the unchanged public URL by link, native share, or QR code.
+8. A visitor can optionally preview and attach one photo to a message; the owner sees it with the same moderation controls.
 
 ## Functional requirements
 
 - Register, log in, log out, and restore an authenticated session.
 - Enforce unique, stable usernames and unique normalized emails.
 - Render a public profile for an existing username.
-- Accept guest memories with author name, message, anonymous choice, optional prompt, and optional photo.
+- Accept guest memories with author name, message, anonymous choice, an optional prompt, and one optional validated photo.
 - List only the signed-in owner's memories in the dashboard.
 - Allow only the owner to favorite, pin, hide, or delete their memories.
 - Allow the owner to update profile and relevant privacy/settings values.
 - Hide owner-hidden memories from public responses.
 - Return clear validation and not-found errors without leaking sensitive data.
+- Keep standard mode as the default while allowing owners to enable or disable graduation/farewell presentation.
+- Generate share and QR content from the existing public URL only.
 
 ## Non-functional requirements
 
 - Responsive, mobile-first, accessible UI targeting WCAG 2.2 AA practices.
-- Secure password storage and cookie-based authentication.
+- Secure password storage and Supabase-managed bearer-token sessions.
 - Consistent validation, error handling, structured logs, and abuse controls.
 - Fast public-page loads and reliable API behavior under normal MVP traffic.
 - Maintainable modules with tests for security boundaries and core journeys.
@@ -66,7 +70,7 @@ Administrators are outside the MVP.
 
 ## MVP scope
 
-The MVP includes the two roles and journeys above, text memories, optional prompt/photo fields, owner moderation controls, basic profile editing, and a small curated prompt set. Phases 3 and 4 are implemented in code: public books and secure no-login submissions plus the private owner dashboard, search, filters, moderation controls, book status, sharing, and basic profile editing. Photo upload remains a later phase. Live verification requires a migrated Supabase project and server-only service key.
+The MVP includes the two roles and journeys above, message-first memories with one optional photo, optional prompts, owner moderation controls, profile editing, and an optional graduation/farewell presentation mode. Phases 3–7 are implemented in code, including private photo storage and controlled signed delivery. Live verification requires a migrated Supabase project and server-only service key.
 
 ## Future scope
 

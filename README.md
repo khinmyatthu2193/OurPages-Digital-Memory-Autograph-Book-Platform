@@ -104,7 +104,9 @@ For example:
 
 ### 📷 Photo Attachments
 
-Photo attachments are planned as part of the extended memory-book experience.
+Visitors can attach one optional JPG, PNG, or WebP photo (up to 5 MB) to a
+message. Photos are kept in a private Supabase Storage bucket and delivered
+only through short-lived signed links for memories the viewer may see.
 
 ---
 
@@ -301,11 +303,32 @@ OurPages is being developed incrementally rather than building the entire produc
 - Memory-book settings
 - Shareable personal link
 
+### Phase 5 — Product Polish & Memory Experience
+
+- Warm, consistent public book, dashboard, and authentication styling
+- Expandable long memories with prompt context
+- Clear success, empty, closed, loading, and error states
+- Copy and native share feedback
+- Accessible dialogs, forms, focus states, and reduced-motion support
+- Safe public-page metadata and lightweight OurPages branding
+
+### Phase 6 — Graduation & Farewell Mode + Sharing
+
+- Optional graduation/farewell presentation without changing standard books
+- Custom occasion title, class/group, year, and farewell message
+- Graduation prompt set and occasion-aware submission copy
+- Adaptive native sharing, copy-link fallback, and downloadable QR codes
+- Safe farewell share metadata and print-friendly public books
+
+### Phase 7 — Photo Memories
+
+- One optional photo per guest memory, with preview and mobile file selection
+- Client and server validation for JPG, PNG, and WebP files up to 5 MB
+- Private Supabase Storage objects with short-lived signed access
+- Accessible photo viewer, lazy thumbnails, and deletion cleanup
+
 ### Future
 
-- 📷 Photo memories
-- 🎓 Graduation / farewell mode
-- 🔗 QR codes
 - 📄 PDF memory-book export
 - 🎙️ Voice memories
 - 💌 More personalization options
@@ -314,7 +337,7 @@ OurPages is being developed incrementally rather than building the entire produc
 
 ## 🧭 Current Status
 
-**Development Status: Phase 4 complete**
+**Development Status: Phase 7 complete in code**
 
 Implemented:
 
@@ -326,7 +349,10 @@ Implemented:
 - ✅ Search, filtering, favorite, pin, hide, and delete controls
 - ✅ Profile settings and shareable personal links
 
-Personalization and extended memory features remain on the future roadmap.
+Phase 7 adds one optional photo to the existing message-first memory flow. The
+bucket remains private, hidden-memory photos are omitted from public responses,
+and standard text-only memories continue to work. Apply all Supabase migrations
+before running the live app.
 
 ---
 

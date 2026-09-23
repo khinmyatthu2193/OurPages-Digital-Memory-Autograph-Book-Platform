@@ -31,6 +31,8 @@ npx supabase test db
 
 `db reset` is destructive and is only for the disposable local database. It applies `supabase/migrations` and then `supabase/seed.sql`. `test db` runs the pgTAP ownership/RLS integration checks under authenticated and anonymous roles. Do not run reset against shared or production data. Review migrations before pushing. Email confirmation behavior is controlled in Supabase Auth settings; when enabled, registration asks the user to confirm before a session exists.
 
+The Phase 7 migration creates the private `memory-photos` bucket; no additional environment variables are required. Hosted projects must receive this migration with `npx supabase db push` before photo-capable server code is started. The service-role key remains server-only.
+
 ## Run and verify
 
 ```bash
@@ -43,7 +45,7 @@ npm run build
 
 The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, and Vite proxies `/api`. A live Supabase project is required for manual end-to-end registration and login. Unit tests mock external Auth calls and inspect the migration boundary, so they do not require real credentials. Full RLS integration can be exercised against local Supabase after `npx supabase db reset`.
 
-## Phase 4 manual smoke test
+## Phase 7 manual smoke test
 
 1. Register a valid non-reserved username and confirm email if required.
 2. Submit at least two guest memories, then log in and confirm `/dashboard` shows their real statistics.
@@ -54,3 +56,19 @@ The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, 
 7. Edit the display name and bio, copy the public link, and open the public page.
 8. Log out and confirm all `/dashboard` routes redirect to `/login`.
 9. With a second account, verify another owner's memory IDs return `404` for update and delete operations.
+10. At 320, 375, 390, 414, 768, 1024, and 1440 px, verify public pages, forms, cards, dashboard navigation, and dialogs have no horizontal overflow or clipped controls.
+11. Submit a 2,000-character memory, expand it publicly, and verify its optional prompt context remains readable.
+12. Enable reduced motion at the OS/browser level and verify feedback remains immediate without noticeable movement.
+13. Confirm the public page title/description use only the public display name and reset after navigating away.
+14. In Settings, enable graduation/farewell mode, save optional title/class/year/message values, and confirm the public header and My Page preview update.
+15. Confirm graduation prompts appear first while standard prompts and the no-prompt choice remain available.
+16. Submit a farewell memory without logging in and confirm the graduation-specific success state appears.
+17. Copy and natively share the public URL where supported; in a browser without Web Share, confirm Copy Link remains and Share is absent.
+18. Open the QR dialog by keyboard, scan or decode the QR to confirm it contains only the absolute `/u/<username>` URL, download the PNG, and close with Escape.
+19. Print-preview a public standard book and a graduation book; confirm navigation/buttons are hidden and complete long memories remain readable.
+20. Return to standard mode and confirm the original public language and presentation return without deleting saved graduation details.
+21. Submit text-only, anonymous-photo, and named-photo memories using JPG, PNG, and WebP files; confirm previews and success copy.
+22. Reject an SVG/renamed non-image and a file over 5 MB, then confirm no memory or object was created.
+23. Open a public photo by keyboard, close with Escape and the backdrop, and verify portrait/landscape images at all listed widths.
+24. Hide a photo memory and confirm it and its URL are absent from a fresh public API response while remaining visible to the owner.
+25. Delete a photo memory and verify its row and `memory-photos` object are removed.

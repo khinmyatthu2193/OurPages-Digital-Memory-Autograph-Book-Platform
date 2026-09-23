@@ -6,6 +6,18 @@ All notable project changes will be recorded here, following Keep a Changelog co
 
 ### Added
 
+- Phase 7 one-photo memory attachments with mobile preview/removal, honest upload state, and photo-aware success copy.
+- Private Supabase `memory-photos` storage, signature/MIME/5 MB validation, controlled object paths, signed reads, failure cleanup, and idempotent retries.
+- Lazy public/owner photo thumbnails, an accessible lightbox, print support, and upload/storage/privacy tests.
+
+- Phase 6 optional graduation/farewell mode with customizable title, class/group, year, and message.
+- Graduation-specific prompt data, public presentation, submission success copy, sharing metadata, and dashboard preview.
+- Occasion-aware native sharing, copy fallback, accessible lazy-generated QR dialog with PNG download, and print-friendly public books.
+- Authorization, migration-default, standard/graduation mode, prompt ordering, sharing URL, and QR payload tests.
+
+- Phase 5 public memory-card expansion, prompt context, warm empty/closed/success states, native sharing, reusable toast feedback, dynamic safe metadata, and a minimal favicon.
+- Focused tests for private-book non-disclosure, the 2,000-character form boundary, and accessible long-memory expansion.
+
 - Phase 4 private owner dashboard with real statistics, recent memories, responsive navigation, public-page sharing, book-status control, and basic profile editing.
 - Authenticated memory list, favorite, pin, visibility, and delete endpoints with explicit ownership checks and RLS enforcement.
 - Owner memory search, filters, pinned-first sorting, mutation feedback, rollback behavior, delete confirmation, and useful empty/error/loading states.
@@ -24,6 +36,9 @@ All notable project changes will be recorded here, following Keep a Changelog co
 - Product, architecture, database, API, security, and development documentation.
 
 ### Changed
+
+- Unified design tokens, focus treatment, reduced-motion behavior, authentication styling, responsive card behavior, and user-facing action feedback across the client.
+- Corrected visible landing-page character encoding and aligned product documentation with the text-only MVP.
 
 - Completed the Phase 3 public response boundary, guest-form error and keyboard handling, and route/error states.
 - Replaced the initialization-era Prisma/custom-password direction with Supabase PostgreSQL and Supabase Auth.
