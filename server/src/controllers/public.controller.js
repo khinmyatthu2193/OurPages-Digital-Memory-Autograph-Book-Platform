@@ -14,6 +14,17 @@ export async function getPrompts(_request, response) {
 }
 
 export async function submitMemory(request, response) {
-  const data = await createPublicMemory(request.params.username, request.body);
+  const body = {
+    ...request.body,
+    ...(request.body.isAnonymous === 'true' ? { isAnonymous: true } : {}),
+    ...(request.body.isAnonymous === 'false' ? { isAnonymous: false } : {}),
+  };
+  if (!body.promptId) delete body.promptId;
+  const data = await createPublicMemory(
+    request.params.username,
+    body,
+    undefined,
+    request.file,
+  );
   response.status(201).json({ data });
 }

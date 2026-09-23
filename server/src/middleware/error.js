@@ -9,7 +9,7 @@ export function notFoundHandler(request, response) {
 
 export function errorHandler(error, _request, response, _next) {
   const status = Number.isInteger(error.status) ? error.status : 500;
-  const expose = status < 500;
+  const expose = status < 500 || error.code === 'PHOTO_UPLOAD_FAILED';
 
   if (!expose) {
     console.error(error);
