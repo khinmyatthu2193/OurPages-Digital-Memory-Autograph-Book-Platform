@@ -8,6 +8,7 @@ const navigation = [
   { to: '/dashboard', label: 'Overview', end: true },
   { to: '/dashboard/memories', label: 'Memories' },
   { to: '/dashboard/my-page', label: 'My Page' },
+  { to: '/dashboard/export', label: 'Export' },
   { to: '/dashboard/settings', label: 'Settings' },
 ];
 

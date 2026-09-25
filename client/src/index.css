@@ -648,6 +648,15 @@
   .dashboard-overview-grid {
     @apply grid gap-5 md:grid-cols-[1.2fr_.8fr];
   }
+  .export-callout {
+    @apply mt-5 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center;
+  }
+  .export-callout h2 {
+    @apply mt-2;
+  }
+  .export-callout p:last-child {
+    @apply mt-2 text-sm leading-6 text-[#756158];
+  }
   .share-url {
     @apply mt-5 w-full rounded-xl border border-[#dfcbbb] bg-[#faf2e9] px-4 py-3 text-sm text-[#694e45] outline-none focus:ring-2 focus:ring-rosewood;
   }
@@ -858,6 +867,133 @@
 }
 
 @layer components {
+  .export-preview {
+    @apply min-h-screen bg-[#eee3d6] px-3 py-4 text-ink sm:px-6 sm:py-8;
+  }
+  .export-toolbar {
+    @apply mx-auto mb-6 flex max-w-[210mm] flex-col gap-4 rounded-2xl border border-[#dfcbbb] bg-[#fffaf2] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5;
+  }
+  .export-toolbar strong {
+    @apply block font-serif text-xl;
+  }
+  .export-kicker {
+    @apply mb-1 text-[10px] font-bold uppercase tracking-[.2em] text-rosewood;
+  }
+  .export-actions {
+    @apply flex flex-wrap gap-2;
+  }
+  .export-book {
+    @apply mx-auto max-w-[210mm] overflow-hidden bg-white shadow-[0_18px_55px_rgba(70,45,35,.16)];
+  }
+  .export-cover {
+    @apply relative flex min-h-[min(1120px,calc(100vh-3rem))] flex-col items-center justify-center overflow-hidden bg-[#fff9f0] px-6 py-20 text-center sm:px-16;
+  }
+  .export-cover::before,
+  .export-cover::after {
+    content: '';
+    @apply pointer-events-none absolute rounded-full border border-[#c9957e]/40;
+  }
+  .export-cover::before {
+    @apply -right-24 -top-24 h-72 w-72;
+  }
+  .export-cover::after {
+    @apply -bottom-28 -left-24 h-80 w-80;
+  }
+  .graduation .export-cover {
+    @apply bg-[#f7e8d8];
+  }
+  .export-cover-ornament {
+    @apply text-3xl text-[#b57864];
+  }
+  .export-brand {
+    @apply mt-5 font-serif text-lg font-bold tracking-wide;
+  }
+  .export-avatar {
+    @apply mt-8 h-24 w-24 rounded-full object-cover ring-4 ring-white sm:h-28 sm:w-28;
+  }
+  .export-cover-label {
+    @apply mt-10 text-[10px] font-bold uppercase tracking-[.22em] text-rosewood;
+  }
+  .export-cover h1 {
+    @apply mt-3 max-w-2xl break-words font-serif text-[clamp(2.8rem,8vw,5.5rem)] leading-[.98] tracking-tight;
+    overflow-wrap: anywhere;
+  }
+  .export-cover-rule {
+    @apply my-7 h-px w-24 bg-[#c9957e];
+  }
+  .export-cover h2 {
+    @apply max-w-2xl break-words font-serif text-[clamp(1.8rem,5vw,3.5rem)] leading-tight text-[#774951];
+    overflow-wrap: anywhere;
+  }
+  .export-class-year {
+    @apply mt-4 max-w-xl break-words text-sm font-bold uppercase tracking-[.14em] text-[#765047];
+  }
+  .export-subtitle {
+    @apply mt-7 max-w-xl whitespace-pre-wrap break-words font-serif text-lg italic leading-8 text-[#68463b];
+  }
+  .export-cover-footer {
+    @apply absolute bottom-8 text-[10px] font-bold uppercase tracking-[.16em] text-[#9a7a6d];
+  }
+  .export-pages {
+    @apply px-5 py-14 sm:px-12 sm:py-20;
+  }
+  .export-section-heading {
+    @apply mb-8 border-b border-[#dbc4b1] pb-6;
+  }
+  .export-section-heading h2 {
+    @apply font-serif text-4xl;
+  }
+  .export-memory-list {
+    @apply grid gap-6;
+  }
+  .export-memory {
+    @apply break-inside-avoid rounded-2xl border border-[#e4d3c3] bg-[#fffdf8] p-5 sm:p-8;
+  }
+  .export-memory > header {
+    @apply flex flex-col gap-1 border-b border-[#eee0d3] pb-4 sm:flex-row sm:items-baseline sm:justify-between;
+  }
+  .export-memory > header p {
+    @apply font-bold text-rosewood;
+  }
+  .export-memory time {
+    @apply text-xs text-[#806b61];
+  }
+  .export-prompt {
+    @apply mt-5 text-sm italic leading-6 text-[#806b61];
+  }
+  .export-photo {
+    @apply mx-auto mt-6 max-h-[420px] w-auto max-w-full rounded-xl object-contain;
+  }
+  .export-photo-unavailable {
+    @apply mt-5 rounded-lg bg-[#f5ede5] p-3 text-sm text-[#756158];
+  }
+  .export-message {
+    @apply mt-6 whitespace-pre-wrap break-words font-serif text-xl leading-8 text-[#49362f];
+  }
+  .export-empty {
+    @apply my-12 rounded-2xl border border-dashed border-[#d7beaa] px-5 py-12 text-center text-[#756158];
+  }
+  .export-empty > span {
+    @apply block font-serif text-5xl text-[#c6907e];
+  }
+  .export-empty h3 {
+    @apply mx-auto mt-4 max-w-lg font-serif text-2xl text-ink;
+  }
+  .export-empty p {
+    @apply mx-auto mt-3 max-w-lg leading-7;
+  }
+  .export-empty a {
+    @apply mt-5 inline-block font-bold text-rosewood;
+  }
+  .export-state {
+    @apply mx-auto grid min-h-screen max-w-xl place-content-center justify-items-center gap-4 px-6 text-center text-[#756158];
+  }
+  .export-state h1 {
+    @apply font-serif text-4xl leading-tight text-ink;
+  }
+}
+
+@layer components {
   .auth-card {
     @apply mx-auto my-10 max-w-md rounded-[2rem] border border-[#e5d5c5] bg-[#fffdf8] p-6 shadow-[0_18px_50px_rgba(90,53,37,.09)] sm:my-16 sm:p-9;
   }
@@ -950,6 +1086,7 @@
 
 @media print {
   @page {
+    size: A4;
     margin: 14mm;
   }
 
@@ -963,6 +1100,55 @@
   .read-more,
   .toast-region,
   .modal-backdrop {
+    display: none !important;
+  }
+
+  .export-toolbar {
+    display: none !important;
+  }
+
+  .export-preview {
+    min-height: auto !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .export-book {
+    max-width: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+
+  .export-cover {
+    min-height: calc(297mm - 28mm) !important;
+    break-after: page;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .export-pages {
+    padding: 0 !important;
+  }
+
+  .export-section-heading {
+    margin-bottom: 8mm !important;
+  }
+
+  .export-memory-list {
+    gap: 6mm !important;
+  }
+
+  .export-memory {
+    break-inside: avoid-page;
+    background: white !important;
+    box-shadow: none !important;
+  }
+
+  .export-photo {
+    max-height: 92mm !important;
+  }
+
+  .export-empty a {
     display: none !important;
   }
 

@@ -44,17 +44,20 @@ describe('application routes', () => {
     ).toBeInTheDocument();
   });
 
-  it('redirects unauthenticated dashboard visitors to login', async () => {
-    render(
-      <MemoryRouter initialEntries={['/dashboard']}>
-        <App />
-      </MemoryRouter>,
-    );
+  it.each(['/dashboard', '/dashboard/export'])(
+    'redirects unauthenticated visitors from %s to login',
+    async (path) => {
+      render(
+        <MemoryRouter initialEntries={[path]}>
+          <App />
+        </MemoryRouter>,
+      );
 
-    expect(
-      await screen.findByRole('heading', { name: 'Log in' }),
-    ).toBeInTheDocument();
-  });
+      expect(
+        await screen.findByRole('heading', { name: 'Log in' }),
+      ).toBeInTheDocument();
+    },
+  );
 
   it('shows a retry message when the public API is unavailable', async () => {
     vi.stubGlobal(

@@ -5,6 +5,7 @@ import DashboardLayout from './components/dashboard/DashboardLayout.jsx';
 import ToastProvider from './components/feedback/ToastProvider.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
+import ExportPage from './pages/ExportPage.jsx';
 import HomePage from './pages/HomePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import MemoriesPage from './pages/MemoriesPage.jsx';
@@ -26,6 +27,14 @@ export default function App() {
             <Route path="u/:username" element={<PublicBookPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
+          <Route
+            path="dashboard/export"
+            element={
+              <ProtectedRoute>
+                <ExportPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="dashboard"
             element={
