@@ -108,6 +108,14 @@ Visitors can attach one optional JPG, PNG, or WebP photo (up to 5 MB) to a
 message. Photos are kept in a private Supabase Storage bucket and delivered
 only through short-lived signed links for memories the viewer may see.
 
+### Printable Memory Book
+
+Owners can open **Export** from the dashboard to preview a keepsake containing
+their current profile, visible memories, prompts, and attached photos. The
+preview is designed for A4 browser printing and **Print → Save as PDF**. Hidden
+memories are excluded on the server, and photo storage paths never reach the
+browser.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -327,9 +335,16 @@ OurPages is being developed incrementally rather than building the entire produc
 - Private Supabase Storage objects with short-lived signed access
 - Accessible photo viewer, lazy thumbnails, and deletion cleanup
 
+### Phase 8 — Memory Book Export
+
+- Authenticated owner-only export preview at `/dashboard/export`
+- Standard and graduation keepsake covers
+- Visible memories, prompts, and securely signed photos
+- Purpose-built A4 print styles for browser Print / Save as PDF
+
 ### Future
 
-- 📄 PDF memory-book export
+- Optional private archival export including hidden memories
 - 🎙️ Voice memories
 - 💌 More personalization options
 
@@ -337,7 +352,7 @@ OurPages is being developed incrementally rather than building the entire produc
 
 ## 🧭 Current Status
 
-**Development Status: Phase 7 complete in code**
+**Development Status: Phase 8 complete in code**
 
 Implemented:
 
@@ -348,11 +363,12 @@ Implemented:
 - ✅ Owner dashboard with statistics and recent memories
 - ✅ Search, filtering, favorite, pin, hide, and delete controls
 - ✅ Profile settings and shareable personal links
+- ✅ Authenticated A4 memory-book preview and browser PDF preservation
 
-Phase 7 adds one optional photo to the existing message-first memory flow. The
-bucket remains private, hidden-memory photos are omitted from public responses,
-and standard text-only memories continue to work. Apply all Supabase migrations
-before running the live app.
+Phase 8 adds a protected preservation preview and browser-based PDF workflow.
+The export API is scoped to the authenticated owner and returns only visible
+memories and short-lived photo URLs. No database migration, environment
+variable, PDF service, or new dependency is required.
 
 ---
 
