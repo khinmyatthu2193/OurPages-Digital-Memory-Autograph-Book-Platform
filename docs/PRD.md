@@ -44,6 +44,7 @@ Administrators are outside the MVP.
 6. The owner updates their public name, bio, or avatar.
 7. The owner can optionally enable graduation/farewell mode, customize occasion details, and share the unchanged public URL by link, native share, or QR code.
 8. A visitor can optionally preview and attach one photo to a message; the owner sees it with the same moderation controls.
+9. The owner previews a keepsake version of their visible memory book and prints it or saves it as a PDF.
 
 ## Functional requirements
 
@@ -58,6 +59,8 @@ Administrators are outside the MVP.
 - Return clear validation and not-found errors without leaking sensitive data.
 - Keep standard mode as the default while allowing owners to enable or disable graduation/farewell presentation.
 - Generate share and QR content from the existing public URL only.
+- Let an authenticated owner export a print-ready standard or graduation memory book containing public profile details, visible memories, prompts, and securely delivered photos.
+- Exclude hidden and deleted memories from the Phase 8 public preservation export.
 
 ## Non-functional requirements
 
@@ -70,11 +73,11 @@ Administrators are outside the MVP.
 
 ## MVP scope
 
-The MVP includes the two roles and journeys above, message-first memories with one optional photo, optional prompts, owner moderation controls, profile editing, and an optional graduation/farewell presentation mode. Phases 3–7 are implemented in code, including private photo storage and controlled signed delivery. Live verification requires a migrated Supabase project and server-only service key.
+The MVP includes the two roles and journeys above, message-first memories with one optional photo, optional prompts, owner moderation controls, profile editing, an optional graduation/farewell presentation mode, and owner-only print/PDF preservation. Phases 3–8 are implemented in code, including private photo storage and controlled signed delivery. Live verification requires a migrated Supabase project and server-only service key.
 
 ## Future scope
 
-Possible post-MVP work includes richer book presentation, exports, additional themes, and owner-controlled sharing options. Each requires separate discovery and approval. Payments, AI features, social feeds, and complex notifications are not planned.
+Possible post-MVP work includes a separately authorized private archive containing hidden memories, additional themes, and owner-controlled sharing options. Each requires separate discovery and approval. Payments, AI features, social feeds, and complex notifications are not planned.
 
 ## Privacy requirements
 
@@ -84,6 +87,7 @@ Possible post-MVP work includes richer book presentation, exports, additional th
 - Provide owner controls for visibility and deletion.
 - Define retention, account deletion, and privacy-policy details before launch.
 - Avoid logging secrets, passwords, authentication tokens, or full sensitive payloads.
+- Require authentication and server-side ownership scoping for export data; never return storage paths or hidden memories in the standard export.
 
 ## Success criteria
 

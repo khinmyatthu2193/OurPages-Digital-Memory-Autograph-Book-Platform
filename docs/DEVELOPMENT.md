@@ -33,6 +33,11 @@ npx supabase test db
 
 The Phase 7 migration creates the private `memory-photos` bucket; no additional environment variables are required. Hosted projects must receive this migration with `npx supabase db push` before photo-capable server code is started. The service-role key remains server-only.
 
+Phase 8 has no migration, environment variable, or new dependency. Export uses
+the existing service-role storage signer only after bearer-token authentication
+and owner-scoped database queries. PDF output is provided by the browser's print
+dialog rather than a server PDF runtime.
+
 ## Run and verify
 
 ```bash
@@ -45,7 +50,7 @@ npm run build
 
 The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, and Vite proxies `/api`. A live Supabase project is required for manual end-to-end registration and login. Unit tests mock external Auth calls and inspect the migration boundary, so they do not require real credentials. Full RLS integration can be exercised against local Supabase after `npx supabase db reset`.
 
-## Phase 7 manual smoke test
+## Phase 8 manual smoke test
 
 1. Register a valid non-reserved username and confirm email if required.
 2. Submit at least two guest memories, then log in and confirm `/dashboard` shows their real statistics.
@@ -72,3 +77,8 @@ The client runs at `http://localhost:5173`, Express at `http://localhost:3000`, 
 23. Open a public photo by keyboard, close with Escape and the backdrop, and verify portrait/landscape images at all listed widths.
 24. Hide a photo memory and confirm it and its URL are absent from a fresh public API response while remaining visible to the owner.
 25. Delete a photo memory and verify its row and `memory-photos` object are removed.
+26. Open **Export** from the dashboard and confirm `/dashboard/export` shows a cover, all visible memories, prompt text, and the correct attached photos.
+27. Hide a memory, reload the export, and confirm neither its content nor photo appears. Confirm an unauthenticated visit redirects to login.
+28. Check both standard and graduation modes, including custom title, class/year, farewell message, and the no-memories state.
+29. At 320, 375, 390, 414, 768, 1024, and 1440 px, confirm the preview has no horizontal overflow and both actions remain keyboard accessible.
+30. Use Print / Save as PDF with A4 paper. Confirm the toolbar is absent, the cover occupies its own page, memory cards do not split unnecessarily, long messages remain readable, and photos preserve their aspect ratio.

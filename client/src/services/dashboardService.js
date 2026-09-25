@@ -24,6 +24,7 @@ async function request(path, accessToken, options = {}) {
 export const dashboardService = {
   getIdentity: (token) => request('/auth/me', token),
   getMemories: (token) => request('/memories', token),
+  getExportBook: (token) => request('/export/memory-book', token),
   updateMemory: (token, id, updates) =>
     request(`/memories/${encodeURIComponent(id)}`, token, {
       method: 'PATCH',

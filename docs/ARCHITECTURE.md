@@ -37,6 +37,24 @@ Owner profile changes use an authenticated Supabase client carrying the user's t
 
 The protected dashboard has overview, memories, My Page, and settings routes. It sends the current Supabase access token to Express, which verifies the user before listing or changing memories. Memory services add an explicit `owner_id = authenticated user ID` condition while RLS independently enforces the same boundary. The browser calculates overview statistics from the securely returned owner collection, performs client-side search and filters, and rolls back optimistic memory changes when the API fails. A small client-only toast provider announces meaningful owner actions without changing the API boundary.
 
+Memory-book preservation uses the protected `/dashboard/export` preview and
+`GET /api/export/memory-book`. The endpoint derives ownership exclusively from
+the verified bearer token, queries `owner_id = authenticated user ID`, and
+applies `is_hidden = false` before signing photos. Its allow-listed response
+contains public profile presentation fields and export-ready memory content;
+database IDs, moderation fields, and private storage paths are removed. Deleted
+rows cannot appear because deletion is physical in the current schema. If photo
+signing is temporarily unavailable, text memories remain exportable and no
+storage path is exposed.
+
+PDF preservation intentionally uses semantic HTML plus dedicated A4
+`@media print` styles and the browser's Print / Save as PDF capability. The
+cover becomes its own page, memory cards avoid page splits, interactive controls
+are hidden, and photos are size-constrained. This avoids a browser-automation or
+server PDF dependency and its deployment/runtime cost. Phase 8 implements the
+visible/public preservation view only; a hidden-memory private archive remains a
+future, separately authorized feature.
+
 ## Boundaries
 
 - `controllers`: HTTP status/envelope handling
@@ -45,4 +63,4 @@ The protected dashboard has overview, memories, My Page, and settings routes. It
 - `validators`: boundary normalization and allow lists
 - `supabase/migrations`: schema, triggers, constraints, indexes, and RLS
 
-The `memory-photos` bucket has no browser-role object policies. All upload, signing, and cleanup operations use the server-only client after application authorization. Phase 7 does not add galleries, replacement, video, image transformation, or export generation.
+The `memory-photos` bucket has no browser-role object policies. All upload, signing, and cleanup operations use the server-only client after application authorization. Export reuses the same short-lived signed delivery and does not make the bucket public. The product does not add galleries, replacement, video, image transformation, or server-side PDF generation.

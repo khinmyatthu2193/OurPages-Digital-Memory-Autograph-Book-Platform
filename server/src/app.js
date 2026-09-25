@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import authRouter from './routes/auth.routes.js';
+import exportRouter from './routes/export.routes.js';
 import healthRouter from './routes/health.routes.js';
 import memoryRouter from './routes/memory.routes.js';
 import promptRouter from './routes/prompt.routes.js';
@@ -29,6 +30,7 @@ export function createApp() {
   app.use('/api/memories', memoryRouter);
   app.use('/api/prompts', promptRouter);
   app.use('/api/auth', authRouter);
+  app.use('/api/export', exportRouter);
   app.use('/api/profile', profileRouter);
   app.use('/api/public', publicRouter);
   app.use(notFoundHandler);

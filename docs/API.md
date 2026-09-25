@@ -14,6 +14,7 @@ All Express endpoints are under `/api`. Resource responses use `{ "data": ... }`
 | GET    | `/api/public/prompts`            | Public               | Active prompt IDs, text, and categories only                       |
 | GET    | `/api/prompts`                   | Public               | Canonical Phase 3 route for active prompt choices                  |
 | GET    | `/api/memories`                  | Bearer token         | All memories owned by the current user, pinned first               |
+| GET    | `/api/export/memory-book`        | Bearer token         | Print-ready visible memories for the current owner                 |
 | PATCH  | `/api/memories/:id`              | Bearer token         | Favorite, pin, or hide a memory owned by the current user          |
 | DELETE | `/api/memories/:id`              | Bearer token         | Permanently delete a memory owned by the current user              |
 
@@ -32,5 +33,15 @@ All owner memory routes require `Authorization: Bearer <Supabase access token>`.
 `PATCH /api/memories/:id` accepts one or more boolean fields from `is_favorite`, `is_pinned`, and `is_hidden`. Other fields and non-boolean values return `400 VALIDATION_ERROR`. Unknown, malformed, or other-owner IDs return `404 MEMORY_NOT_FOUND`. `DELETE /api/memories/:id` uses the same ownership boundary, returns `204`, and attempts private-object cleanup after the database deletion.
 
 Public and owner memory responses may include `photo_url`, a ten-minute signed URL. They never include the private `photo_path` or submission token. Public signing occurs only for rows already filtered with `is_hidden = false`; private books return no public memory data.
+
+## Memory book export
+
+`GET /api/export/memory-book` derives the owner exclusively from the verified
+access token. It returns `{ data: { profile, memories } }` with allow-listed
+presentation fields, visible memories in chronological order, resolved prompt
+text, and optional short-lived `photo_url` values. The response omits memory and
+profile IDs, prompt IDs, moderation flags, storage paths, hidden memories, and
+deleted rows. A photo-signing outage degrades to text-only memories rather than
+exposing paths or failing the complete export.
 
 `PATCH /api/profile/me` accepts supported profile fields including `display_name`, `bio`, `memory_book_status`, `memory_book_mode`, `graduation_title`, `graduation_class`, `graduation_year`, and `graduation_message`. Mode is `standard | graduation`; optional text is trimmed and length-limited, and year is null or an integer from 1900–2200. The authenticated user ID always comes from the verified bearer token. Username remains immutable.

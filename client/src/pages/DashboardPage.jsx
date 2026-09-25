@@ -40,6 +40,19 @@ export default function DashboardPage() {
           onChange={(status) => updateProfile({ memory_book_status: status })}
         />
       </div>
+      <section
+        className="dashboard-card export-callout"
+        aria-labelledby="export-title"
+      >
+        <div>
+          <p className="dashboard-eyebrow">Preserve your pages</p>
+          <h2 id="export-title">Export My Memory Book</h2>
+          <p>Save your visible memories as a printable memory book.</p>
+        </div>
+        <Link className="dashboard-button primary" to="/dashboard/export">
+          Preview memory book
+        </Link>
+      </section>
       <section className="recent-section" aria-labelledby="recent-title">
         <div className="section-title-row">
           <div>
