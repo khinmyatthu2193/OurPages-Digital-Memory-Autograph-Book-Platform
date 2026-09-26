@@ -1,16 +1,23 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-paper: #fffaf0;
-  --color-ink: #3d302b;
-  --color-rosewood: #8f4f55;
-  --color-surface: #fffdf8;
-  --color-muted: #756158;
-  --color-line: #e5d5c5;
-  --color-success: #397153;
-  --color-warning: #97622d;
-  --color-danger: #9d3636;
+  --color-brand: #235c45;
+  --color-brand-dark: #173f31;
+  --color-brand-soft: #dceade;
+  --color-peach: #f3b48f;
+  --color-butter: #f2ce6e;
+  --color-blush: #d98f98;
+  --color-paper: #fbf4e7;
+  --color-ink: #2e352f;
+  --color-rosewood: #235c45;
+  --color-surface: #fffdf7;
+  --color-muted: #68736a;
+  --color-line: #d8d8c6;
+  --color-success: #2f6f52;
+  --color-warning: #8a5a20;
+  --color-danger: #983f45;
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Georgia, 'Times New Roman', serif;
 }
 
 @layer base {
@@ -1076,11 +1083,429 @@
   }
 }
 
+/* Phase 9 visual language: botanical ink, warm paper, and restrained keepsake details. */
+@layer components {
+  .site-header {
+    @apply border-[#d8d7c4] bg-[#fbf4e7]/92;
+    backdrop-filter: blur(14px);
+  }
+  .site-logo-mark,
+  .dashboard-brand span,
+  .auth-brand span {
+    @apply bg-brand;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+  }
+  .site-register {
+    @apply border-brand text-brand hover:bg-brand;
+  }
+
+  .book-page {
+    @apply relative max-w-5xl px-4 sm:px-8 lg:px-10;
+    isolation: isolate;
+  }
+  .book-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        circle at 8% 18%,
+        rgb(243 180 143 / 0.28) 0 7rem,
+        transparent 7.1rem
+      ),
+      radial-gradient(
+        circle at 92% 36%,
+        rgb(35 92 69 / 0.12) 0 11rem,
+        transparent 11.1rem
+      ),
+      linear-gradient(
+        115deg,
+        transparent 0 48%,
+        rgb(35 92 69 / 0.025) 48% 49%,
+        transparent 49% 100%
+      ),
+      #fbf4e7;
+  }
+  .book-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+  }
+  .book-background-decor {
+    @apply pointer-events-none absolute inset-0 -z-[1] hidden lg:block;
+  }
+  .book-background-decor .autograph-decoration {
+    @apply absolute opacity-25;
+  }
+  .book-background-decor .autograph-decoration:nth-child(1) {
+    @apply -left-12 top-80 h-20 w-20 rotate-[-18deg] text-brand;
+  }
+  .book-background-decor .autograph-decoration:nth-child(2) {
+    @apply -right-8 top-[34rem] h-10 w-10 text-[#b87579];
+  }
+  .book-background-decor .autograph-decoration:nth-child(3) {
+    @apply -left-16 top-[60rem] h-16 w-16 rotate-12 text-[#c78158];
+  }
+  .autograph-decoration {
+    @apply inline-grid h-10 w-10 place-items-center;
+  }
+  .autograph-decoration svg {
+    @apply h-full w-full overflow-visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+  }
+  .autograph-decoration svg circle {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .book-hero {
+    @apply relative overflow-visible border border-[#d6d3b9] bg-[#fffdf7] px-5 pb-10 pt-12 shadow-[0_24px_65px_rgba(37,68,51,.13)] sm:px-12 sm:pb-12 sm:pt-14;
+    border-radius: 1.5rem 2.4rem 1.7rem 2.1rem;
+  }
+  .book-hero::before {
+    content: '';
+    @apply pointer-events-none absolute inset-y-5 left-4 w-px bg-[#d5ddcc] sm:left-7;
+    box-shadow: 5px 0 0 rgb(242 206 110 / 0.32);
+  }
+  .book-hero::after {
+    content: '';
+    @apply pointer-events-none absolute bottom-5 right-5 h-24 w-24 rounded-full opacity-40;
+    background: repeating-radial-gradient(
+      circle,
+      #f2ce6e 0 2px,
+      transparent 2px 9px
+    );
+    mask-image: linear-gradient(to top left, #000, transparent 72%);
+  }
+  .hero-tape {
+    @apply absolute -top-3 left-1/2 h-7 w-24 -translate-x-1/2 rotate-[-2deg] bg-[#f2ce6e]/60;
+    clip-path: polygon(3% 8%, 100% 0, 96% 91%, 0 100%);
+  }
+  .hero-flower,
+  .hero-sparkle {
+    @apply pointer-events-none absolute text-[#d47769];
+  }
+  .hero-flower {
+    @apply -left-3 top-14 h-14 w-14 rotate-[-18deg] sm:left-5 sm:top-16;
+  }
+  .hero-sparkle {
+    @apply right-3 top-8 h-10 w-10 text-[#d29f24] sm:right-10 sm:top-12;
+  }
+  .book-hero .avatar {
+    @apply relative z-[1] mb-6 ring-[6px] ring-[#e5eee2];
+    box-shadow: 0 0 0 1px #aac4ad;
+  }
+  .fallback {
+    @apply bg-brand;
+  }
+  .eyebrow {
+    @apply text-brand;
+  }
+  .book-hero h1,
+  .empty-book h1,
+  .success-book h1 {
+    @apply text-[clamp(2.7rem,7vw,4.5rem)] tracking-[-.04em];
+  }
+  .book-hero h1 > span {
+    @apply block italic text-brand;
+  }
+  .username {
+    @apply inline-block rounded-full bg-[#e5eee2] px-3 py-1 text-xs font-bold text-brand;
+  }
+  .bio {
+    @apply text-[#4c5b51];
+  }
+  .introduction {
+    @apply text-brand-dark;
+  }
+  .primary-button {
+    @apply min-h-12 bg-brand px-7 shadow-[0_10px_24px_rgba(35,92,69,.2)] hover:bg-brand-dark;
+  }
+  .graduation-hero {
+    @apply border-[#cbbf97];
+    background:
+      radial-gradient(
+        circle at 10% 8%,
+        rgb(242 206 110 / 0.45),
+        transparent 25%
+      ),
+      radial-gradient(
+        circle at 92% 90%,
+        rgb(217 143 152 / 0.25),
+        transparent 28%
+      ),
+      #fffaf0;
+  }
+  .graduation-rule,
+  .graduation-class {
+    @apply text-brand;
+  }
+  .graduation-rule::before,
+  .graduation-rule::after {
+    @apply bg-[#9ab79f];
+  }
+
+  .memory-list {
+    @apply relative py-14 sm:py-16;
+  }
+  .section-heading {
+    @apply mb-7 flex items-end justify-between gap-4 px-1;
+  }
+  .section-heading h2 {
+    @apply text-[clamp(2rem,5vw,3.2rem)] tracking-[-.035em];
+  }
+  .memory-count {
+    @apply mb-1 hidden rounded-full border border-[#bccdbd] bg-[#edf3eb] px-3 py-1.5 text-xs font-bold text-brand sm:inline-block;
+  }
+  .memory-card {
+    @apply mt-6 overflow-visible border-[#d8d3b9] bg-[#fffdf7] px-6 pb-6 pt-7 shadow-[0_12px_30px_rgba(46,53,47,.07)] sm:px-9 sm:pb-8 sm:pt-9;
+    border-radius: 0.9rem 1.35rem 1rem 1.5rem;
+  }
+  .memory-card::before {
+    @apply inset-x-7 bottom-auto top-0 h-1 w-auto bg-[#f3b48f];
+    border-radius: 0 0 999px 999px;
+  }
+  .memory-card-2::before {
+    @apply bg-[#f2ce6e];
+  }
+  .memory-card-3::before {
+    @apply bg-[#91b196];
+  }
+  .memory-card-2 {
+    @apply sm:ml-6;
+  }
+  .memory-card-3 {
+    @apply sm:mr-5;
+  }
+  .memory-card-header {
+    @apply flex flex-wrap items-baseline gap-x-2 pr-12;
+  }
+  .memory-from-label {
+    @apply text-[10px] font-bold uppercase tracking-[.18em] text-[#778077];
+  }
+  .memory-from {
+    @apply font-serif text-xl italic text-brand;
+  }
+  .memory-motif {
+    @apply absolute -right-2 -top-3 h-12 w-12 rotate-12 text-[#c77a70];
+  }
+  .memory-card-2 .memory-motif {
+    @apply text-[#c49524];
+  }
+  .memory-card-3 .memory-motif {
+    @apply text-brand;
+  }
+  .memory-prompt {
+    @apply mt-4 inline-flex rounded-full bg-[#f7e6d8] px-3 py-1.5 text-xs not-italic text-[#79533e];
+  }
+  .memory-prompt span {
+    @apply mr-1.5 text-[#bd6c62];
+  }
+  .memory-message {
+    @apply my-6 font-serif text-[1.35rem] leading-[1.75] text-[#354038] sm:text-2xl;
+  }
+  .memory-card time,
+  .character-count {
+    @apply text-[#70796f];
+  }
+  .memory-card time {
+    @apply inline-flex items-center gap-2 text-xs font-semibold;
+  }
+  .memory-card time::before {
+    content: '';
+    @apply h-px w-7 bg-[#b7c3b5];
+  }
+  .memory-photo-button {
+    @apply relative mt-6 overflow-visible rounded-sm border-[8px] border-white bg-[#f4eee2] shadow-[0_8px_20px_rgba(42,53,45,.16)];
+    transform: rotate(-0.6deg);
+  }
+  .memory-photo-button::before {
+    content: '';
+    @apply absolute -top-5 left-1/2 z-[1] h-7 w-20 -translate-x-1/2 rotate-2 bg-[#f2ce6e]/55;
+    clip-path: polygon(4% 10%, 100% 0, 95% 92%, 0 100%);
+  }
+
+  .no-memories {
+    @apply mt-0 border-[#afc4b1] bg-[#fffdf7]/85 px-6 py-12 text-[#69756b] shadow-[0_10px_30px_rgba(35,92,69,.06)];
+  }
+  .no-memories > p {
+    @apply mx-auto max-w-md leading-7;
+  }
+  .empty-motifs,
+  .success-celebration {
+    @apply mb-3 flex items-center justify-center gap-3 text-[#d47870];
+  }
+  .empty-motifs .autograph-decoration,
+  .success-celebration .autograph-decoration {
+    @apply h-9 w-9;
+  }
+  .empty-motifs span,
+  .success-celebration > span {
+    @apply text-4xl text-brand;
+  }
+  .success-book {
+    @apply relative max-w-2xl;
+  }
+  .success-book::before {
+    content: '';
+    @apply absolute left-1/2 top-24 -z-[1] h-72 w-72 -translate-x-1/2 rounded-full bg-[#e6eee2];
+    filter: blur(2px);
+  }
+  .success-celebration {
+    animation: celebration-in 520ms cubic-bezier(0.2, 0.9, 0.25, 1.2) both;
+  }
+
+  .memory-modal {
+    @apply border border-[#ced6c5] bg-[#fbf7ec] shadow-[0_28px_80px_rgba(22,53,39,.25)];
+  }
+  .memory-modal::before {
+    content: '';
+    @apply absolute left-0 top-16 h-px w-full bg-[#dbe2d4];
+  }
+  .memory-modal input:not([type='radio']):not([type='checkbox']),
+  .memory-modal textarea {
+    @apply border-[#bfcab9] bg-[#fffef9] focus:outline-brand;
+  }
+  .memory-modal fieldset {
+    @apply grid gap-2 border-[#d2d9c9] bg-[#f4f6ed] p-4;
+  }
+  .prompt-option {
+    @apply min-h-10 rounded-lg px-2 py-1.5 transition hover:bg-white;
+  }
+  .prompt-option:has(input:checked) {
+    @apply bg-white text-brand shadow-sm;
+  }
+  .memory-modal input[type='radio'],
+  .memory-modal input[type='checkbox'] {
+    accent-color: #235c45;
+  }
+  .photo-picker {
+    @apply border-[#9fb6a2] bg-[#edf3e9] hover:bg-white;
+  }
+
+  .home-preview::before {
+    @apply bg-[#dce8d9];
+  }
+  .home-book {
+    @apply border-[#cfd5bd] bg-[#fffdf7] shadow-[18px_24px_45px_rgba(35,69,49,.18),-5px_2px_0_#b7cdb8];
+  }
+  .home-sticker {
+    @apply bg-[#f2ce6e] text-[#3c493e];
+  }
+  .home-close {
+    @apply bg-brand-dark;
+  }
+  .home-close .home-kicker,
+  .home-close h2 em {
+    @apply text-[#f2ce6e];
+  }
+  .home-step {
+    @apply border-[#d6d8c2] bg-[#fffdf7];
+  }
+
+  .dashboard-shell {
+    @apply bg-[#f4f2e9];
+  }
+  .dashboard-sidebar,
+  .dashboard-mobile-header,
+  .dashboard-mobile-nav {
+    @apply border-[#d5d8c9] bg-[#fbf8ee];
+  }
+  .dashboard-nav a {
+    @apply text-[#59655c] hover:bg-[#e8efe5] hover:text-brand;
+  }
+  .dashboard-nav a.active {
+    @apply bg-[#dceade] text-brand-dark;
+  }
+  .dashboard-card,
+  .stat-card,
+  .owner-memory-card,
+  .auth-card {
+    @apply border-[#d8d8c6] bg-[#fffdf7] shadow-[0_8px_25px_rgba(45,63,50,.055)];
+  }
+  .dashboard-button.primary,
+  .auth-submit {
+    @apply bg-brand hover:bg-brand-dark;
+  }
+  .dashboard-button.secondary {
+    @apply border-[#9eb5a1] text-brand hover:bg-[#e9f0e6];
+  }
+  .stat-card strong,
+  .owner-memory-author,
+  .profile-username,
+  .dashboard-eyebrow {
+    @apply text-brand;
+  }
+  .memory-badges span {
+    @apply bg-[#e5eee2] text-brand-dark;
+  }
+  .owner-memory-message {
+    @apply text-[#354038];
+  }
+  .memory-actions button[aria-pressed='true'] {
+    @apply border-brand bg-[#dceade] text-brand;
+  }
+  .share-url {
+    @apply border-[#bcc9b9] bg-[#f1f4ea] text-brand-dark;
+  }
+  .dashboard-empty > span {
+    @apply text-[#d2786e];
+  }
+  .mode-option:has(input:checked) {
+    @apply border-brand bg-[#e8f0e5] ring-brand;
+  }
+  .mode-option input {
+    accent-color: #235c45;
+  }
+}
+
+@keyframes celebration-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 639px) {
+  .book-page {
+    padding-top: 1.5rem;
+  }
+  .hero-flower {
+    opacity: 0.65;
+  }
+  .hero-sparkle {
+    height: 1.8rem;
+    width: 1.8rem;
+  }
+  .memory-card-2,
+  .memory-card-3 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .memory-motif {
+    right: 0.4rem;
+  }
+}
+
 @media (hover: hover) {
   .memory-card:hover,
   .owner-memory-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(90, 53, 37, 0.09);
+    box-shadow: 0 14px 32px rgba(35, 69, 49, 0.11);
   }
 }
 

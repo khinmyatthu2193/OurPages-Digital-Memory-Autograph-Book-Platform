@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import AutographDecoration from './AutographDecorations.jsx';
 
 export default function PublicBookHeader({ profile, open, onLeaveMemory }) {
   const graduation = profile.memory_book_mode === 'graduation';
@@ -8,6 +9,9 @@ export default function PublicBookHeader({ profile, open, onLeaveMemory }) {
 
   return (
     <section className={`book-hero${graduation ? ' graduation-hero' : ''}`}>
+      <AutographDecoration motif="flower" className="hero-flower" />
+      <AutographDecoration motif="sparkle" className="hero-sparkle" />
+      <span className="hero-tape" aria-hidden="true" />
       {graduation && (
         <>
           <p className="eyebrow">A chapter to remember</p>
@@ -28,11 +32,13 @@ export default function PublicBookHeader({ profile, open, onLeaveMemory }) {
           {profile.display_name.charAt(0).toUpperCase()}
         </div>
       )}
-      {!graduation && <p className="eyebrow">OurPages memory book</p>}
+      {!graduation && <p className="eyebrow">A little book of big memories</p>}
       {graduation ? (
         <h2 className="graduation-name">{profile.display_name}</h2>
       ) : (
-        <h1>{profile.display_name}&apos;s OurPages</h1>
+        <h1 aria-label={`${profile.display_name}'s OurPages`}>
+          {profile.display_name}&apos;s <span>memory book</span>
+        </h1>
       )}
       <p className="username">@{profile.username}</p>
       {graduation ? (

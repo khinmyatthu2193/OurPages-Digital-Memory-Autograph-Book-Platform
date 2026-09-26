@@ -138,6 +138,32 @@ describe('application routes', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({ data: { id: 'memory-1' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            data: {
+              profile: {
+                display_name: 'Khin',
+                username: 'khin',
+                bio: null,
+                avatar_url: null,
+                memory_book_status: 'open',
+              },
+              prompts: [],
+              memories: [
+                {
+                  id: 'memory-1',
+                  author_name: null,
+                  message: 'A lovely day',
+                  is_anonymous: true,
+                  prompt_id: null,
+                  photo_url: null,
+                  created_at: '2026-09-26T00:00:00Z',
+                },
+              ],
+            },
+          }),
         }),
     );
     render(
@@ -157,6 +183,16 @@ describe('application routes', () => {
       await screen.findByRole('heading', {
         name: 'Your memory has been added.',
       }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Back to the memory book' }),
+    );
+    expect(
+      screen.getByText(
+        (_content, element) =>
+          element.classList?.contains('screen-message') &&
+          element.textContent.includes('A lovely day'),
+      ),
     ).toBeInTheDocument();
   });
 

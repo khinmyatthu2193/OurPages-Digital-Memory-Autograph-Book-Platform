@@ -5,6 +5,7 @@ import { useToast } from '../components/feedback/toast-context.js';
 import MemoryCard from '../components/public/MemoryCard.jsx';
 import MemoryForm from '../components/public/MemoryForm.jsx';
 import PublicBookHeader from '../components/public/PublicBookHeader.jsx';
+import AutographDecoration from '../components/public/AutographDecorations.jsx';
 import { publicBookService } from '../services/publicBookService.js';
 
 export default function PublicBookPage() {
@@ -15,6 +16,7 @@ export default function PublicBookPage() {
   const [error, setError] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [refreshingBook, setRefreshingBook] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -122,10 +124,50 @@ export default function PublicBookPage() {
     }
   }
 
+  async function refreshAfterSubmission(details) {
+    setFormOpen(false);
+    setSuccess({ ...details, refreshFailed: false });
+    setRefreshingBook(true);
+    try {
+      const refreshedBook = await publicBookService.getBook(username);
+      setBook(refreshedBook);
+    } catch {
+      setSuccess({ ...details, refreshFailed: true });
+      notify(
+        'Your memory was saved, but the updated book could not be loaded yet.',
+        'error',
+      );
+    } finally {
+      setRefreshingBook(false);
+    }
+  }
+
+  async function returnToBook() {
+    if (!success?.refreshFailed) {
+      setSuccess(null);
+      return;
+    }
+
+    setRefreshingBook(true);
+    try {
+      const refreshedBook = await publicBookService.getBook(username);
+      setBook(refreshedBook);
+      setSuccess(null);
+    } catch {
+      notify('The updated memory book still could not be loaded.', 'error');
+    } finally {
+      setRefreshingBook(false);
+    }
+  }
+
   if (success) {
     return (
       <div className="success-book" role="status">
-        <span aria-hidden="true">♥</span>
+        <div className="success-celebration" aria-hidden="true">
+          <AutographDecoration motif="flower" />
+          <span>♥</span>
+          <AutographDecoration motif="sparkle" />
+        </div>
         <p className="eyebrow">
           {graduation ? 'Farewell memory saved' : 'Memory saved'}
         </p>
@@ -140,9 +182,14 @@ export default function PublicBookPage() {
         <button
           className="primary-button"
           type="button"
-          onClick={() => setSuccess(null)}
+          disabled={refreshingBook}
+          onClick={returnToBook}
         >
-          Back to the memory book
+          {refreshingBook
+            ? 'Updating the memory book...'
+            : success.refreshFailed
+              ? 'Try loading the memory book again'
+              : 'Back to the memory book'}
         </button>
       </div>
     );
@@ -150,6 +197,11 @@ export default function PublicBookPage() {
 
   return (
     <div className={`book-page${graduation ? ' graduation-book' : ''}`}>
+      <div className="book-background-decor" aria-hidden="true">
+        <AutographDecoration motif="leaf" />
+        <AutographDecoration motif="sparkle" />
+        <AutographDecoration motif="flower" />
+      </div>
       <PublicBookHeader
         profile={profile}
         open={open}
@@ -157,8 +209,15 @@ export default function PublicBookPage() {
       />
       <section className="memory-list" aria-labelledby="memories-heading">
         <div className="section-heading">
-          <p className="eyebrow">Collected with care</p>
-          <h2 id="memories-heading">Memories</h2>
+          <div>
+            <p className="eyebrow">Collected with care</p>
+            <h2 id="memories-heading">Notes from lovely people</h2>
+          </div>
+          {memories.length > 0 && (
+            <span className="memory-count">
+              {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
+            </span>
+          )}
         </div>
         {memories.length ? (
           memories.map((memory) => (
@@ -170,8 +229,16 @@ export default function PublicBookPage() {
           ))
         ) : (
           <div className="no-memories">
-            <h3>No memories yet</h3>
-            <p>This page is waiting for its first little story.</p>
+            <div className="empty-motifs" aria-hidden="true">
+              <AutographDecoration motif="flower" />
+              <span>♡</span>
+              <AutographDecoration motif="sparkle" />
+            </div>
+            <h3>The first page is waiting</h3>
+            <p>
+              This memory book is ready for its first little note, shared story,
+              or favorite moment.
+            </p>
             {isOwner ? (
               <button
                 className="primary-button"
@@ -198,10 +265,7 @@ export default function PublicBookPage() {
           prompts={orderedPrompts}
           graduation={graduation}
           onClose={() => setFormOpen(false)}
-          onSuccess={(details) => {
-            setFormOpen(false);
-            setSuccess(details);
-          }}
+          onSuccess={refreshAfterSubmission}
         />
       )}
     </div>
