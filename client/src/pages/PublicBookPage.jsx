@@ -16,6 +16,7 @@ export default function PublicBookPage() {
   const [error, setError] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [refreshingBook, setRefreshingBook] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -123,6 +124,42 @@ export default function PublicBookPage() {
     }
   }
 
+  async function refreshAfterSubmission(details) {
+    setFormOpen(false);
+    setSuccess({ ...details, refreshFailed: false });
+    setRefreshingBook(true);
+    try {
+      const refreshedBook = await publicBookService.getBook(username);
+      setBook(refreshedBook);
+    } catch {
+      setSuccess({ ...details, refreshFailed: true });
+      notify(
+        'Your memory was saved, but the updated book could not be loaded yet.',
+        'error',
+      );
+    } finally {
+      setRefreshingBook(false);
+    }
+  }
+
+  async function returnToBook() {
+    if (!success?.refreshFailed) {
+      setSuccess(null);
+      return;
+    }
+
+    setRefreshingBook(true);
+    try {
+      const refreshedBook = await publicBookService.getBook(username);
+      setBook(refreshedBook);
+      setSuccess(null);
+    } catch {
+      notify('The updated memory book still could not be loaded.', 'error');
+    } finally {
+      setRefreshingBook(false);
+    }
+  }
+
   if (success) {
     return (
       <div className="success-book" role="status">
@@ -145,9 +182,14 @@ export default function PublicBookPage() {
         <button
           className="primary-button"
           type="button"
-          onClick={() => setSuccess(null)}
+          disabled={refreshingBook}
+          onClick={returnToBook}
         >
-          Back to the memory book
+          {refreshingBook
+            ? 'Updating the memory book...'
+            : success.refreshFailed
+              ? 'Try loading the memory book again'
+              : 'Back to the memory book'}
         </button>
       </div>
     );
@@ -223,10 +265,7 @@ export default function PublicBookPage() {
           prompts={orderedPrompts}
           graduation={graduation}
           onClose={() => setFormOpen(false)}
-          onSuccess={(details) => {
-            setFormOpen(false);
-            setSuccess(details);
-          }}
+          onSuccess={refreshAfterSubmission}
         />
       )}
     </div>
